@@ -9,7 +9,8 @@ exports.getAll = () => {
        articulos.activo
 FROM  articulos 
 INNER JOIN rubros 
-ON articulos.id_rubro = rubros.id;`, []);
+ON articulos.id_rubro = rubros.id
+WHERE articulos.activo = 1;`, []);
 }
 
 exports.getById = (id) => {
@@ -31,4 +32,9 @@ exports.update = (id, descripcion, precio, rubro, iva) => {
     params = [descripcion, precio, iva, rubro, id];
     return queryMySQL(`UPDATE articulos SET descripcion = ?, precio = ?, id_rubro = ?, iva = ?
         WHERE id = ?`, params);
+}
+
+exports.borrar = (id) => {
+    params = [id];
+    return queryMySQL('UPDATE articulos SET activo = 0 WHERE id = ?', params);
 }

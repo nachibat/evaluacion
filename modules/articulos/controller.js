@@ -51,4 +51,13 @@ exports.postModificar = async (req, res) => {
     res.json({ type: "success", title: "Exito", text: "Artículo modificado correctamente" });
 }
 
+exports.borrar = async (req, res) => {
+    const { idArt } = req.body;
+    const { id } = req.session.user;
+    const deleted = await mArticulos.borrar(idArt);
+    if (!deleted.affectedRows) return res.json({ type: "error", title: "Error", text: "Hubo un error al procesar la solicitud" });
+    await mEventos.addEvento(id, 'Borro', `Mod id ${idArt}`, 'articulos');
+    res.json({ type: "success", title: "Exito", text: "Artículo eliminado correctamente" });
+}
+
 const isNumber = (d) => d == Number(d);
