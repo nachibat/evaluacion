@@ -19,6 +19,8 @@ router.post('/articulos/alta', mw.auth, cArticulos.postAlta);
 router.get('/articulos/modificar/:id', mw.auth, cArticulos.getModificar);
 router.post('/articulos/modificar', mw.auth, cArticulos.postModificar);
 router.post('/articulos/lista/borrar', mw.auth, cArticulos.borrar);
+router.get('/articulos/precios-masivos', mw.auth, cArticulos.getPreciosMasivos);
+router.post('/articulos/precios-masivos', mw.auth, cArticulos.postPreciosMasivos);
 
 // PERMISOS
 router.get('/accesos/lista/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cAccesos.getAccesos)

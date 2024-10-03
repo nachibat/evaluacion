@@ -60,4 +60,23 @@ exports.borrar = async (req, res) => {
     res.json({ type: "success", title: "Exito", text: "Artículo eliminado correctamente" });
 }
 
+exports.getPreciosMasivos = async (req, res) => {
+    const rubros = await mArticulos.getRubros();
+    res.render('articulos/views/precios', {
+        pagename: 'Actualizar precios masivamente por rubro',
+        rubros
+    });
+}
+
+exports.postPreciosMasivos = async (req, res) => {
+    const { id } = req.session.user;
+    const { porcentaje, rubro, accion } = req.body;
+    if (!porcentaje.length  || !rubro.length || !accion.length) return res.json({ type: "error", title: "Error", text: "Complete todos los campos!" });
+    if (!isNumber(porcentaje) || !isNumber(rubro)) return res.json({ type: "error", title: "Error", text: "Campos numéricos inválidos!" });
+    const result = await mArticulos.preciosMasivos(porcentaje, rubro, accion);
+    if (!result.affectedRows) return res.json({ type: "error", title: "Error", text: "Hubo un error al procesar la solicitud" });
+    await mEventos.addEvento(id, 'Modificar precios', `Mod rubro id ${rubro}`, 'articulos');
+    res.json({ type: "success", title: "Exito", text: "Se modificaron los precios correctamente" });
+}
+
 const isNumber = (d) => d == Number(d);
