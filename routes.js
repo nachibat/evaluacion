@@ -15,6 +15,7 @@ router.get('/home', mw.auth, cIndex.getHome)
 // ARTICULOS
 router.get('/articulos/lista', mw.auth, cArticulos.getLista);
 router.get('/articulos/alta', mw.auth, cArticulos.getAlta);
+router.post('/articulos/alta', mw.auth, cArticulos.postAlta)
 
 // PERMISOS
 router.get('/accesos/lista/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cAccesos.getAccesos)

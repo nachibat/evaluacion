@@ -39,6 +39,10 @@ CREATE TABLE articulos (
     CONSTRAINT fk_rubro FOREIGN KEY (id_rubro) REFERENCES rubros(id)
 );
 
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) VALUES ("Zapatillas Nike", 120000, 1, 21, 1);
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) VALUES ("Remera Adidas", 40000, 2, 21, 1);
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) VALUES ("Zapatillas Rebbok", 110000, 1, 21, 1);
+
 DROP TABLE IF EXISTS empresa;
 CREATE TABLE empresa (
 	id INT AUTO_INCREMENT PRIMARY KEY,

@@ -23,25 +23,25 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="usuario"><b>Descripción del artículo</b></label>
+                <label for="descripcion"><b>Descripción del artículo</b></label>
                 <input class="form-control" id="descripcion" placeholder="Descripción del artículo" required maxlength="20" autocomplete="off">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="mail"><b>Precio</b></label>
+                <label for="precio"><b>Precio</b></label>
                 <input class="form-control" maxlength="50" type="number" id="precio" placeholder="Precio" autocomplete="off">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="clave"><b>IVA</b></label>
+                <label for="iva"><b>IVA</b></label>
                 <input class="form-control" type="number" id="iva" placeholder="IVA" required maxlength="20" autocomplete="off">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="clave"><b>Rubro</b></label>
+                <label for="rubro"><b>Rubro</b></label>
                 <select id="rubro"class="form-control">
                     {% for r in rubros %}
                         <option value="{{ r.id }}">{{ r.descripcion }}</option>
@@ -61,7 +61,24 @@
 {% block scripts %}
 <script>
     async function Alta() {
+        
         $('#preloader').show();
+        const body = {
+            descripcion: $('#descripcion').val(),
+            precio: $('#precio').val(),
+            rubro: $('#rubro').val(),
+            iva: $('#iva').val(),
+        };
+        const res = await $.post('/articulos/alta', body);
+        $('#preloader').hide();
+        Swal.fire({
+            icon: res.type,
+            title: res.title,
+            text: res.text,
+            timer: 2500
+        }).then(() => {
+            if (res.type == "success") window.location = "/articulos/lista";
+        });
     }
 </script>
 {% endblock %}
