@@ -1,0 +1,67 @@
+{% extends '../../template.html' %}
+
+{% block styles %} 
+    <style type="text/css">
+        .btn:disabled{
+            cursor: no-drop;
+        }
+        .ops{
+            text-align: center;
+            padding: 0.1rem .75rem !important;
+            vertical-align: middle !important;
+        }
+        .ops [disabled]{
+            opacity: 0.2;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 mb-4 d-flex">
+            <h4 id="title"><i class="fa fa-archive"></i>&nbsp;{{ pagename }}</h4>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="usuario"><b>Descripción del artículo</b></label>
+                <input class="form-control" id="descripcion" placeholder="Descripción del artículo" required maxlength="20" autocomplete="off">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="mail"><b>Precio</b></label>
+                <input class="form-control" maxlength="50" type="number" id="precio" placeholder="Precio" autocomplete="off">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="clave"><b>IVA</b></label>
+                <input class="form-control" type="number" id="iva" placeholder="IVA" required maxlength="20" autocomplete="off">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="clave"><b>Rubro</b></label>
+                <select id="rubro"class="form-control">
+                    {% for r in rubros %}
+                        <option value="{{ r.id }}">{{ r.descripcion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group" style="float: right;">
+                <button id="Guardar" onclick="Alta()" class="btn btn-round btn-success"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+                <a href="/articulos/lista" class="btn btn-round btn-danger"><i class="fa fa-backward"></i>&nbsp;Volver</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function Alta() {
+        $('#preloader').show();
+    }
+</script>
+{% endblock %}

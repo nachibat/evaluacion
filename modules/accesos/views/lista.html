@@ -1,0 +1,168 @@
+{% extends '../../template.html' %}
+
+{% block styles %} 
+    <style type="text/css">
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <h4 id="title"><i class="fa fa-shield-alt"></i>&nbsp;{{ pagename }}</h4>
+            <a id="btnNuevo" href="/usuarios/lista" class="btn btn-round btn-danger ml-auto"><i class="fa fa-backward"></i>&nbsp;Volver</a>
+        </div>
+        <input type="hidden" name="idUsuario" value="{{idUsuario}}">
+        <div class="col-12 mt-4" style="overflow-x: auto;">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th hidden>ID</th>
+                        <th>
+                            <div class="row mb-0">
+                                <div class="col-sm-6">Menu</div>
+                            </div>
+                        </th>
+                        <th style="min-width: 130px;">
+                            <div class="row mb-0">
+                                <div class="col-sm-5">Consulta</div>
+                                <div class="col-sm-7">
+                                    <div class="switch">
+                                        <label>
+                                              <input type="checkbox" onchange="selectAll(this, 'consulta')">
+                                              <span class="lever"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                        <th style="min-width: 100px;">
+                            <div class="row mb-0">
+                                <div class="col-sm-3">Alta</div>
+                                <div class="col-sm-9">
+                                    <div class="switch">
+                                        <label>
+                                              <input type="checkbox" onchange="selectAll(this, 'alta')">
+                                              <span class="lever"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                        <th style="min-width: 135px;">
+                            <div class="row mb-0">
+                                <div class="col-sm-5">Modificar</div>
+                                <div class="col-sm-7">
+                                    <div class="switch">
+                                        <label>
+                                              <input type="checkbox" onchange="selectAll(this, 'modificar')">
+                                              <span class="lever"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                        <th style="min-width: 120px;">
+                            <div class="row mb-0">
+                                <div class="col-sm-5">Borrar</div>
+                                <div class="col-sm-7">
+                                    <div class="switch">
+                                        <label>
+                                              <input type="checkbox" onchange="selectAll(this, 'baja')">
+                                              <span class="lever"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for menu in menues %}
+                        {% if menu.route != 'accesos' %}
+                            <tr>
+                                <td hidden>{{ menu.id }}</td>
+                                <td>
+                                    <div class="row mb-0">
+                                        <div class="col-12">{{ menu.titulo }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row mb-0">
+                                        <div class="col-12">
+                                            <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" {% if usuario_accesos[menu.id - 1].c == 1 %} checked {% endif %} onchange="CheckboxHandler(this, '{{menu.id}}', 'c', '{{idUsuario}}')" class="consulta">
+                                                    <span class="lever"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row mb-0">
+                                        <div class="col-12">
+                                            <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" {% if usuario_accesos[menu.id - 1].a == 1 %} checked {% endif %} onchange="CheckboxHandler(this, '{{menu.id}}', 'a', '{{idUsuario}}')" class="alta">
+                                                    <span class="lever"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row mb-0">
+                                        <div class="col-12">
+                                            <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" {% if usuario_accesos[menu.id - 1].m == 1 %} checked {% endif %} onchange="CheckboxHandler(this, '{{menu.id}}', 'm', '{{idUsuario}}')" class="modificar">
+                                                    <span class="lever"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row mb-0">
+                                        <div class="col-12">
+                                            <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" {% if usuario_accesos[menu.id - 1].b == 1 %} checked {% endif %} onchange="CheckboxHandler(this, '{{menu.id}}', 'b', '{{idUsuario}}')" class="baja">
+                                                    <span class="lever"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    function selectAll(obj, accion){
+        if(obj.checked){
+            $('.'+accion).prop("checked", true);
+        }
+        else{
+            $('.'+accion).prop("checked", false);
+        }
+        $('.'+accion).trigger("onchange");
+    }
+
+    async function CheckboxHandler(checkbox, menu, acceso, usuario) {
+        let checked = $(checkbox).prop("checked") ? 1 : 0;
+        const data = await $.post(`/updateacceso/${usuario}/${menu}/${acceso}/${checked}`);
+        if(data.type != "success")
+        Swal.fire({
+            icon: data.type,
+            title: data.title,
+            text: data.text
+        });
+    };
+</script>
+{% endblock %}

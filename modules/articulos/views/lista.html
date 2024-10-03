@@ -1,0 +1,54 @@
+{% extends '../../template.html' %}
+
+{% block styles %} 
+    <style type="text/css">
+        .btn:disabled{
+            cursor: no-drop;
+        }
+        .ops{
+            text-align: center;
+            padding: 0.1rem .75rem !important;
+            vertical-align: middle !important;
+        }
+        .ops [disabled]{
+            opacity: 0.2;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 d-flex">
+        <h4 id="title"><i class="fa fa-archive"></i>&nbsp;{{ pagename }}</h4>
+        <a id="btnNuevo" href="/articulos/alta" class="btn btn-round btn-success ml-auto"><i class="fa fa-plus"></i> Nuevo</a>
+        <a id="btnPrecios" href="/articulos/precios-masivos" class="btn btn-round btn-primary ml-1"><i class="fa fa-plus"></i> Actualizar precios</a>
+    </div>
+    <div class="col-12 mt-4" style="overflow-x: auto;">
+        <table class="table table-striped tableFixHead" id="tablaArticulos">
+            <thead>
+                <th style="min-width: 130px;">Descripción artículo</th>
+                <th>Precio</th>
+                <th>IVA</th>
+                <th>Rubro</th>
+                <th style="text-align: right;">Activo?</th>
+                <th style="text-align: center; width: 190px; min-width: 190px;">Acciones</th>
+            </thead>
+            <tbody>
+                {% for a in articulos %}
+                <tr>
+                    <td>{{ a.descripcion }}</td>
+                    <td>{{ a.precio }}</td>
+                    <td>{{ a.iva }}</td>
+                    <td>{{ a.rubro }}</td>
+                    <td style="text-align: right;">{% if a.activo == 1 %} Si {% else %} No {% endif %}</td>
+                    <td class="ops">
+                        <a href="#" class="btn btn-round btn-sm btn-warning" title="Modificar" data-toggle="tooltip"><i class="fa fa-pen"></i></a>
+                        <button class="btn btn-round btn-sm btn-danger" data-toggle="tooltip" onclick="BorrarArticulo('{{ a.unica }}')"
+                            data-id="{{ a.unica }}" title="Borrar" {% if a.activo != 1 %}disabled{% endif %}><i class="fa fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
