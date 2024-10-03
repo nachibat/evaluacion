@@ -14,7 +14,6 @@ const config_mysql = {
 exports.queryMySQL = (query, params) => {
     return new Promise((resolve, reject) => {
         var connection = mysql.createConnection(config_mysql)
-        //console.log(query)
         connection.query(query, params, (err, rows, fields) => {
             if (err) reject(err)
             else resolve(rows)

@@ -42,9 +42,9 @@
                     <td>{{ a.rubro }}</td>
                     <td style="text-align: right;">{% if a.activo == 1 %} Si {% else %} No {% endif %}</td>
                     <td class="ops">
-                        <a href="#" class="btn btn-round btn-sm btn-warning" title="Modificar" data-toggle="tooltip"><i class="fa fa-pen"></i></a>
+                        <a href="/articulos/modificar/{{a.id}}" class="btn btn-round btn-sm btn-warning" title="Modificar" data-toggle="tooltip"><i class="fa fa-pen"></i></a>
                         <button class="btn btn-round btn-sm btn-danger" data-toggle="tooltip" onclick="BorrarArticulo('{{ a.unica }}')"
-                            data-id="{{ a.unica }}" title="Borrar" {% if a.activo != 1 %}disabled{% endif %}><i class="fa fa-trash-alt"></i></button>
+                            data-id="{{ a.unica }}" title="Borrar"><i class="fa fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}
