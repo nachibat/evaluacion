@@ -36,12 +36,13 @@ CREATE TABLE articulos (
     id_rubro INT,
     iva INT,
     activo BOOLEAN,
+    img VARCHAR(255),
     CONSTRAINT fk_rubro FOREIGN KEY (id_rubro) REFERENCES rubros(id)
 );
 
-INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) VALUES ("Zapatillas Nike", 120000, 1, 21, 1);
-INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) VALUES ("Remera Adidas", 40000, 2, 21, 1);
-INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) VALUES ("Zapatillas Rebbok", 110000, 1, 21, 1);
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas Nike", 120000, 1, 21, 1, "https://acdn.mitiendanube.com/stores/102/392/products/img_46551-8cb0313e855a8ed88216276734530419-1024-1024.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Remera Adidas", 40000, 2, 21, 1, "https://acdn.mitiendanube.com/stores/943/997/products/basica-negra1-9ede7dca77d434160616676898161690-1024-1024.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas Rebbok", 110000, 1, 21, 1, "https://assets.adidas.com/images/w_600,f_auto,q_auto/02cd9a97ce874d89ba17ae2b003ebe50_9366/Zapatillas_adidas_Grand_Court_Lifestyle_para_Tenis_con_Cordones_Blanco_GW6511_01_standard.jpg");
 
 DROP TABLE IF EXISTS empresa;
 CREATE TABLE empresa (

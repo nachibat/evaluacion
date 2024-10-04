@@ -34,6 +34,11 @@ exports.postAlta = async (req, res) => {
     res.json({ type: "success", title: "Exito", text: "Artículo dado de alta correctamente" });
 }
 
+exports.getArticulos = async (req, res) => {
+    const articulos = await mArticulos.getAll();
+    res.json(articulos);
+}
+
 exports.getModificar = async (req, res) => {
     const { id } = req.params;
     const articulo = await mArticulos.getById(id);

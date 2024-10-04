@@ -6,7 +6,8 @@ exports.getAll = () => {
                             articulos.precio,
                             rubros.descripcion as rubro,
                             articulos.iva,
-                            articulos.activo
+                            articulos.activo,
+                            articulos.img
                         FROM  articulos 
                         INNER JOIN rubros 
                         ON articulos.id_rubro = rubros.id

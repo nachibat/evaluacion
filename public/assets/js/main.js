@@ -231,6 +231,29 @@
 
   });
 
+  $(window).on('load', async function() {
+    const articulos = await $.get('/articulos/lista/todos');
+    let cards = $('#cards');
+    articulos.forEach(articulo => {
+      const precio = articulo.precio + articulo.precio * articulo.iva / 100;
+      let img = '/assets/img/no_image.jpg';
+      if (articulo.img) img = articulo.img;
+      cards.append(`
+        <div class="col-md-3">
+        <div class="card" style="width: 18rem; margin-top: 20px;">
+          <div class="card-img-top" style="width: 286px; height: 286px; background-color: gray; background-image: url(${img}); background-repeat: no-repeat; background-size: cover;"></div>
+          <div class="card-body">
+            <h5 class="card-title">${articulo.descripcion}</h5>
+            <div class="card-text">Rubro: ${articulo.rubro}</div>
+            <div>Precio: ${precio}</div>
+            <a href="#" class="btn btn-primary mt-3">Agregar al carrito</a>
+          </div>
+        </div>
+      </div>  
+      `);
+    });
+  });
+
   // Portfolio details carousel
   $(".portfolio-details-carousel").owlCarousel({
     autoplay: true,

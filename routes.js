@@ -14,6 +14,7 @@ router.get('/home', mw.auth, cIndex.getHome)
 
 // ARTICULOS
 router.get('/articulos/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getLista);
+router.get('/articulos/lista/todos', cArticulos. getArticulos);
 router.get('/articulos/alta', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getAlta);
 router.post('/articulos/alta', mw.auth, cArticulos.postAlta);
 router.get('/articulos/modificar/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getModificar);
