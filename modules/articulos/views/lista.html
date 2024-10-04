@@ -13,6 +13,9 @@
         .ops [disabled]{
             opacity: 0.2;
         }
+        .checks {
+            text-align: start;
+        }
     </style>
 {% endblock %}
 
@@ -21,7 +24,8 @@
     <div class="col-md-12 d-flex">
         <h4 id="title"><i class="fa fa-archive"></i>&nbsp;{{ pagename }}</h4>
         <a id="btnNuevo" href="/articulos/alta" class="btn btn-round btn-success ml-auto"><i class="fa fa-plus"></i> Nuevo</a>
-        <a id="btnPrecios" href="/articulos/precios-masivos" class="btn btn-round btn-primary ml-1"><i class="fa fa-plus"></i> Actualizar precios</a>
+        <!-- <a id="btnPrecios" href="/articulos/precios-masivos" class="btn btn-round btn-primary ml-1"><i class="fa fa-plus"></i> Actualizar precios</a> -->
+        <button id="btnPrecios" class="btn btn-round btn-primary ml-1" onclick="PreciosMasivos()"><i class="fa fa-plus"></i> Actualizar precios</button>
     </div>
     <div class="col-12 mt-4" style="overflow-x: auto;">
         <table class="table table-striped tableFixHead" id="tablaArticulos">
@@ -57,29 +61,112 @@
 {% block scripts %}
 <script>
     async function BorrarArticulo(idArt) {
-        Swal.fire({
-            title: 'Confirmar',
-            text: "Desea borrar este artículo?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar',
-            cancelButtonText: 'Cancelar',
-        }).then(async result => {
-            if (result.value) {
-                $("#preloader").show();
-                const res = await $.post('/articulos/lista/borrar', { idArt });
-                $("#preloader").hide();
-                Swal.fire({
-                    icon: res.type,
-                    title: res.title,
-                    text: res.text
-                }).then(() => {
-                    if (res.type == 'success') location.reload();
-                });
-            }
+        $('[data-toggle="tooltip"]').tooltip();
+        const perm = {{ permisions.b | safe }};
+        console.log(perm);
+        if ({{ permisions.b }}) {
+            Swal.fire({
+                title: 'Confirmar',
+                text: "Desea borrar este artículo?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+            }).then(async result => {
+                if (result.value) {
+                    $("#preloader").show();
+                    const res = await $.post('/articulos/lista/borrar', { idArt });
+                    $("#preloader").hide();
+                    Swal.fire({
+                        icon: res.type,
+                        title: res.title,
+                        text: res.text
+                    }).then(() => {
+                        if (res.type == 'success') location.reload();
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'No Permitido!',
+                text: "No tiene permisos para borrar usuarios",
+                icon: 'error',
+            })
+        }
+    }
+
+    async function PreciosMasivos() {
+        const rub = {{ rubros | safe | json}};
+        let options = '';
+        rub.forEach(element => {
+            options += `<option value="${ element.id }">${ element.descripcion }</option>`;
         });
+        if ({{ permisions.m }}) {
+            let porcentajeInput;
+            let rubroInput;
+            Swal.fire({
+                title: 'Precios Masivos',
+                html: `
+                    <br>
+                    <div class="form-group">
+                        <input class="form-control" maxlength="50" type="number" id="porcentaje" placeholder="Porcentaje" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <select id="rubro"class="form-control">${options}</select>
+                    </div>
+                    <div class="checks">
+                        <div class="form-check cursor-pointer">
+                            <input class="form-check-input cursor-pointer" type="radio" name="accion" id="aumento" checked>
+                            <label class="form-check-label cursor-pointer" for="aumento">Porcentaje de aumento</label>
+                        </div>
+                        <div class="form-check cursor-pointer">
+                            <input class="form-check-input cursor-pointer" type="radio" name="accion" id="disminucion">
+                            <label class="form-check-label cursor-pointer" for="disminucion">Porcentaje de disminución</label>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    if ($('#porcentaje').val().trim() === '') {
+                        Swal.showValidationMessage(`El porcentaje debe tener valor`)
+                    }
+                    return;
+                }
+            }).then(async result => {
+                
+                if (result.value) {
+                    let accion = 'aumentar';
+                    if ($('#disminucion').prop('checked')) accion = 'disminuir';
+                    const body = {
+                        porcentaje: Math.abs($('#porcentaje').val()),
+                        rubro: $('#rubro').val(),
+                        accion
+                    };
+                    $("#preloader").show();
+                    const res = await $.post("/articulos/precios-masivos", body );
+                    $("#preloader").hide();
+                    Swal.fire({
+                        icon: res.type,
+                        title: res.title,
+                        text: res.text
+                    }).then(() => {
+                        if (res.type == 'success') window.location = "/articulos/lista";
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'No Permitido!',
+                text: "No tiene permisos para resetear contraseñas de usuarios",
+                icon: 'error',
+            });
+        }
     }
 </script>
 {% endblock %}

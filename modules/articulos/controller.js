@@ -4,9 +4,14 @@ const cAccesos = require('../accesos/controller');
 
 exports.getLista = async (req, res) => {
     const articulos = await mArticulos.getAll();
+    const rubros = await mArticulos.getRubros();
+    const { id, nivel, id_menu } = req.session.user;
+    const permisions = await cAccesos.getPermisosByMenu(id, nivel, id_menu);
     res.render('articulos/views/lista', {
         pagename: 'Lista de artículos',
-        articulos
+        articulos,
+        permisions,
+        rubros
     });
 }
 
@@ -58,14 +63,6 @@ exports.borrar = async (req, res) => {
     if (!deleted.affectedRows) return res.json({ type: "error", title: "Error", text: "Hubo un error al procesar la solicitud" });
     await mEventos.addEvento(id, 'Borro', `Mod id ${idArt}`, 'articulos');
     res.json({ type: "success", title: "Exito", text: "Artículo eliminado correctamente" });
-}
-
-exports.getPreciosMasivos = async (req, res) => {
-    const rubros = await mArticulos.getRubros();
-    res.render('articulos/views/precios', {
-        pagename: 'Actualizar precios masivamente por rubro',
-        rubros
-    });
 }
 
 exports.postPreciosMasivos = async (req, res) => {

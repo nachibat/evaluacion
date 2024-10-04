@@ -60,6 +60,8 @@
 {% block scripts %}
 <script>
     $('[data-toggle="tooltip"]').tooltip();
+    const perm = {{ permisions.b | safe }};
+    console.log(perm);
 
     async function BorrarUsuario(unica) {
         if({{ permisions.b }}){

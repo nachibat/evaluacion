@@ -13,13 +13,12 @@ router.get('/logout', mw.logout)
 router.get('/home', mw.auth, cIndex.getHome)
 
 // ARTICULOS
-router.get('/articulos/lista', mw.auth, cArticulos.getLista);
-router.get('/articulos/alta', mw.auth, cArticulos.getAlta);
+router.get('/articulos/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getLista);
+router.get('/articulos/alta', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getAlta);
 router.post('/articulos/alta', mw.auth, cArticulos.postAlta);
-router.get('/articulos/modificar/:id', mw.auth, cArticulos.getModificar);
+router.get('/articulos/modificar/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getModificar);
 router.post('/articulos/modificar', mw.auth, cArticulos.postModificar);
 router.post('/articulos/lista/borrar', mw.auth, cArticulos.borrar);
-router.get('/articulos/precios-masivos', mw.auth, cArticulos.getPreciosMasivos);
 router.post('/articulos/precios-masivos', mw.auth, cArticulos.postPreciosMasivos);
 
 // PERMISOS
@@ -27,7 +26,7 @@ router.get('/accesos/lista/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cA
 router.post("/updateacceso/:id_usuario/:id_menu/:acceso_short/:value", mw.auth, cAccesos.updateAcceso)
 
 // USUARIOS
-router.get('/usuarios/lista', cUsuarios.getLista)
+router.get('/usuarios/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cUsuarios.getLista)
 router.get('/usuarios/alta', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cUsuarios.getAlta)
 router.post('/usuarios/alta', mw.auth, cUsuarios.postAlta)
 router.post('/usuarios/lista/borrar', mw.auth, cUsuarios.borrar)

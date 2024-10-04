@@ -33,7 +33,7 @@ exports.postLogin = async (req, res) => {
     req.session.auth = true;
     req.session.save();
     await mEventos.addEvento(usuario[0].unica, "Login", `login: ${usuario[0].usuario}`, "secr");
-    return res.json("ok");
+    return res.json({ type: 'success', user: usuario[0] });
 }
 
 function comparePassword(candidatePassword, hash) {

@@ -280,6 +280,7 @@
         })
       }
       else{
-        window.location = "/home"
+        if (data.user.niveles === 'Administrador') window.location = '/home';
+        else window.location = '/';
       }
   }
