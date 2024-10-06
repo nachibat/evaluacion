@@ -23,15 +23,15 @@ exports.getRubros = () => {
     return queryMySQL(`SELECT * FROM rubros`, []);
 }
 
-exports.insert = (descripcion, precio, rubro, iva) => {
-    params = [descripcion, precio, rubro, iva];
-    return queryMySQL(`INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo) 
-        VALUES (?, ?, ?, ?, 1)`, params);
+exports.insert = (descripcion, precio, rubro, iva, img) => {
+    params = [descripcion, precio, rubro, iva, img];
+    return queryMySQL(`INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) 
+        VALUES (?, ?, ?, ?, 1, ?)`, params);
 }
 
-exports.update = (id, descripcion, precio, rubro, iva) => {
-    params = [descripcion, precio, iva, rubro, id];
-    return queryMySQL(`UPDATE articulos SET descripcion = ?, precio = ?, id_rubro = ?, iva = ?
+exports.update = (id, descripcion, precio, rubro, iva, img) => {
+    params = [descripcion, precio, iva, rubro, img, id];
+    return queryMySQL(`UPDATE articulos SET descripcion = ?, precio = ?, id_rubro = ?, iva = ?, img = ?
         WHERE id = ?`, params);
 }
 

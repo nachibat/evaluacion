@@ -16,6 +16,16 @@
         .checks {
             text-align: start;
         }
+        .imagen {
+            width: 40px;
+            height: 40px;
+            background-image: url('/assets/img/no_image.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        table td {
+            vertical-align: inherit !important;
+        }
     </style>
 {% endblock %}
 
@@ -30,6 +40,7 @@
     <div class="col-12 mt-4" style="overflow-x: auto;">
         <table class="table table-striped tableFixHead" id="tablaArticulos">
             <thead>
+                <th style="width: 50px;"></th>
                 <th style="min-width: 130px;">Descripción artículo</th>
                 <th>Precio</th>
                 <th>IVA</th>
@@ -40,6 +51,13 @@
             <tbody>
                 {% for a in articulos %}
                 <tr>
+                    <td>
+                        {% if a.img %}
+                            <div class="imagen" style="background-image: url({{a.img}}); background-repeat: no-repeat; background-size: cover;"></div>
+                        {% else %}
+                        <div class="imagen"></div>
+                        {% endif %}
+                    </td>
                     <td>{{ a.descripcion }}</td>
                     <td>{{ a.precio }}</td>
                     <td>{{ a.iva }}</td>
@@ -63,7 +81,6 @@
     async function BorrarArticulo(idArt) {
         $('[data-toggle="tooltip"]').tooltip();
         const perm = {{ permisions.b | safe }};
-        console.log(perm);
         if ({{ permisions.b }}) {
             Swal.fire({
                 title: 'Confirmar',

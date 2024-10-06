@@ -49,6 +49,12 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="imagen"><b>URL Imagen</b></label>
+                <input class="form-control" type="text" id="imagen" placeholder="Imagen" autocomplete="off" value="{{ articulo.img }}">
+            </div>
+        </div>
         <div class="col-12">
             <div class="form-group" style="float: right;">
                 <button id="Guardar" onclick="Alta()" class="btn btn-round btn-success"><i class="fa fa-save"></i>&nbsp;Guardar</button>
@@ -68,6 +74,7 @@
             precio: $('#precio').val(),
             rubro: $('#rubro').val(),
             iva: $('#iva').val(),
+            img: $('#imagen').val()
         };
         const res = await $.post('/articulos/alta', body);
         $('#preloader').hide();

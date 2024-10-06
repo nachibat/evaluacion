@@ -28,6 +28,10 @@ CREATE TABLE rubros (
     descripcion VARCHAR(255)
 );
 
+INSERT INTO evaluacion.rubros (descripcion) VALUES ( "Calzado");
+INSERT INTO evaluacion.rubros (descripcion) VALUES ( "Ropa");
+INSERT INTO evaluacion.rubros (descripcion) VALUES ( "Gimnasia");
+
 DROP TABLE IF EXISTS articulos;
 CREATE TABLE articulos (
 	id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,6 +47,15 @@ CREATE TABLE articulos (
 INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas Nike", 120000, 1, 21, 1, "https://acdn.mitiendanube.com/stores/102/392/products/img_46551-8cb0313e855a8ed88216276734530419-1024-1024.jpg");
 INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Remera Adidas", 40000, 2, 21, 1, "https://acdn.mitiendanube.com/stores/943/997/products/basica-negra1-9ede7dca77d434160616676898161690-1024-1024.jpg");
 INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas Rebbok", 110000, 1, 21, 1, "https://assets.adidas.com/images/w_600,f_auto,q_auto/02cd9a97ce874d89ba17ae2b003ebe50_9366/Zapatillas_adidas_Grand_Court_Lifestyle_para_Tenis_con_Cordones_Blanco_GW6511_01_standard.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Remera Rebook Hombre", 50000, 1, 21, 1, "https://www.bompie.com.ar/media/catalog/product/cache/12cedc87d7d9a917e3e278f8b211cba4/1/3/136-fu1336.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Remera Salomon Hombre", 30000, 1, 21, 1, "https://cyclesmundo.com/10381-large_default/remera-logo-ss-vi-m.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas Salomon", 30000, 2, 21, 1, "https://salomonstore.com.ar/cdn/shop/files/473017_0_2048x2048.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas Olympikus", 130000, 2, 21, 1, "https://tiendapodium.com.ar/wp-content/uploads/2023/04/O-51101280040-Zapatillas-Olympikus-Challenger-3-Mujer-Trop-Rosa-Fluor.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas All Star Mujer", 150000, 2, 21, 1, "https://celadasa.vtexassets.com/arquivos/ids/230332-800-auto?v=638194296929130000&width=800&height=auto&aspect=true");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Zapatillas All Star Hombre", 160000, 2, 21, 1, "https://thumbs.nosto.com/quick/rbxh5h46/8/89650_alt_2274411334177b797cc197523157adebf8ec444ef341b421b46d8b7e90d8dc29/e53f7b740c67b29e222556e1db5c0ff259aaead4aa8a2d05ffcf3d69660a9f16/A");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Pantalon Gimnasia Adidas hombre", 130000, 1, 21, 1, "https://media2.solodeportes.com.ar/media/catalog/product/cache/7c4f9b393f0b8cb75f2b74fe5e9e52aa/p/a/pantalon-adidas-essentials-3-tiras-negro-88767170-100020ic0044001-1.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Pesas Gimnasia", 20000, 3, 21, 1, "https://http2.mlstatic.com/D_801875-MLA75848799777_042024-O.jpg");
+INSERT INTO articulos (descripcion, precio, id_rubro, iva, activo, img) VALUES ("Raqueta de tennis", 60000, 3, 21, 1, "https://acdn.mitiendanube.com/stores/001/219/670/products/03477-05-37f011edce2372030317012797616422-1024-1024.jpg");
 
 DROP TABLE IF EXISTS empresa;
 CREATE TABLE empresa (
