@@ -52,11 +52,9 @@
                 {% for a in articulos %}
                 <tr>
                     <td>
-                        {% if a.img %}
-                            <div class="imagen" style="background-image: url({{a.img}}); background-repeat: no-repeat; background-size: cover;"></div>
-                        {% else %}
-                        <div class="imagen"></div>
-                        {% endif %}
+                        <div class="imagen">
+                            <div style="width: 100%; height: 100%; background-image: url({{a.img}}); background-repeat: no-repeat; background-size: cover;"></div>
+                        </div>
                     </td>
                     <td>{{ a.descripcion }}</td>
                     <td>{{ a.precio }}</td>

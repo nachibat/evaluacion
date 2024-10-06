@@ -232,26 +232,7 @@
   });
 
   $(window).on('load', async function() {
-    const articulos = await $.get('/articulos/lista/todos');
-    let cards = $('#cards');
-    articulos.forEach(articulo => {
-      const precio = articulo.precio + articulo.precio * articulo.iva / 100;
-      let img = '/assets/img/no_image.jpg';
-      if (articulo.img) img = articulo.img;
-      cards.append(`
-        <div class="col-md-3">
-        <div class="card" style="width: 18rem; margin-top: 20px;">
-          <div class="card-img-top" style="width: 286px; height: 286px; background-color: gray; background-image: url(${img}); background-repeat: no-repeat; background-size: cover;"></div>
-          <div class="card-body">
-            <h5 class="card-title">${articulo.descripcion}</h5>
-            <div class="card-text">Rubro: ${articulo.rubro}</div>
-            <div>Precio: ${precio}</div>
-            <a href="#" class="btn btn-primary mt-3">Agregar al carrito</a>
-          </div>
-        </div>
-      </div>  
-      `);
-    });
+    await cargarCards();
   });
 
   // Portfolio details carousel
@@ -286,24 +267,49 @@
   });
 
   async function ingresar(){
-      $('#preloader').show();
-      let body = {
-        username: $("#login_usuario").val(),
-        password: $("#login_password").val()
-      }
+    $('#preloader').show();
+    let body = {
+      username: $("#login_usuario").val(),
+      password: $("#login_password").val()
+    }
 
-      const data = await $.post("/login", body);
- 
-      if(data.type == "error"){
-        $('#preloader').fadeOut('slow');
-        Swal.fire({
-            icon: data.type,
-            title: data.title,
-            text: data.text
-        })
-      }
-      else{
-        if (data.user.niveles === 'Administrador') window.location = '/home';
-        else window.location = '/';
-      }
-  }
+    const data = await $.post("/login", body);
+
+    if(data.type == "error"){
+      $('#preloader').fadeOut('slow');
+      Swal.fire({
+          icon: data.type,
+          title: data.title,
+          text: data.text
+      })
+    }
+    else{
+      if (data.user.niveles === 'Administrador') window.location = '/home';
+      else window.location = '/';
+    }
+}
+
+async function cargarCards() {
+  const articulos = await $.get('/articulos/lista/todos');
+  let cards = $('#cards');
+  articulos.forEach(articulo => {
+    const precio = articulo.precio + articulo.precio * articulo.iva / 100;
+    let img = '/assets/img/no_image.jpg';
+    if (articulo.img) img = articulo.img;
+    cards.append(`
+      <div class="col-md-3">
+      <div class="card" style="width: 18rem; margin-top: 20px;">
+        <div class="card-img-top" style="width: 286px; height: 286px; background-image: url('/assets/img/no_image.jpg'); background-repeat: no-repeat; background-size: cover;">
+          <div style="width: 100%; height: 100%; background-image: url(${img}); background-repeat: no-repeat; background-size: cover;"></div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">${articulo.descripcion}</h5>
+          <div class="card-text">Rubro: ${articulo.rubro}</div>
+          <div>Precio: ${precio}</div>
+          <a href="#" class="btn btn-primary mt-3">Agregar al carrito</a>
+        </div>
+      </div>
+    </div>  
+    `);
+  });
+}
