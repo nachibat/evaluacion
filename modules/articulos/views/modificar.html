@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
+    <form class="row g-3 needs-validation" novalidate>
         <div class="col-md-12 mb-4 d-flex">
             <h4 id="title"><i class="fa fa-archive"></i>&nbsp;{{ pagename }}</h4>
         </div>
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="precio"><b>Precio</b></label>
-                <input class="form-control" maxlength="50" type="number" id="precio" placeholder="Precio" autocomplete="off" value="{{ articulo.precio }}">
+                <input class="form-control" maxlength="50" type="number" id="precio" placeholder="Precio" required autocomplete="off" value="{{ articulo.precio }}">
             </div>
         </div>
         <div class="col-md-6">
@@ -79,12 +79,17 @@
             </div>
         </div>
         {% endif %}
-    </div>
+    </form>
 {% endblock %}
 
 {% block scripts %}
 <script>
     async function Modificar() {
+        event.preventDefault();
+        event.stopPropagation();
+        const form = document.getElementsByClassName('needs-validation')[0];
+        form.classList.add('was-validated');
+        if (!form.checkValidity()) return;
         Swal.fire({
             title: 'Confirmar',
             text: "Confirme para modificar el artículo",

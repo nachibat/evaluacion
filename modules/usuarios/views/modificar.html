@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
+    <form class="row g-3 needs-validation" novalidate>
         <div class="col-12">
             <h4 id="title"><i class="fa fa-users"></i>&nbsp;{{ pagename }}</h4>
             <br>
@@ -23,12 +23,14 @@
             <div class="form-group">
                 <label for="usuario"><b>Nombre de usuario</b></label>
                 <input class="form-control" id="usuario" placeholder="Nombre de usuario" required maxlength="20" autocomplete="off" value="{{ usuario.usuario.trim() }}">
+                <div class="invalid-feedback">Campo requerido</div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="mail"><b>Mail</b></label>
-                <input class="form-control" maxlength="50" id="mail" placeholder="ejemplo@hotmail.com" autocomplete="off" value="{{ usuario.mail.trim() }}">
+                <input class="form-control" type="email" maxlength="50" id="mail" placeholder="ejemplo@hotmail.com" required autocomplete="off" value="{{ usuario.mail.trim() }}">
+                <div class="invalid-feedback">Debe ingresar un email válido</div>
             </div>
         </div>
         <div class="col-md-6">
@@ -65,12 +67,17 @@
                 <a href="/usuarios/lista" class="btn btn-round btn-danger"><i class="fa fa-backward"></i>&nbsp;Volver</a>
             </div>
         </div>
-    </div>
+    </form>
 
 {% endblock %}
 {% block scripts%}
 <script>
     function Modificar() {
+        event.preventDefault();
+        event.stopPropagation();
+        const form = document.getElementsByClassName('needs-validation')[0];
+        form.classList.add('was-validated');
+        if (!form.checkValidity()) return;
         Swal.fire({
             title: 'Confirmar',
             text: "Confirme para modificar el usuario",

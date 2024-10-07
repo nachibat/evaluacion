@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
+    <form class="row g-3 needs-validation" novalidate>
         <div class="col-12 mb-4">
             <h4 id="title"><i class="fa fa-users"></i>&nbsp;{{ pagename }}</h4>
         </div>
@@ -15,18 +15,21 @@
             <div class="form-group">
                 <label for="usuario"><b>Nombre de usuario</b></label>
                 <input class="form-control" id="usuario" placeholder="Nombre de usuario" required maxlength="20" autocomplete="off">
+                <div class="invalid-feedback">Campo requerido</div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="mail"><b>Mail</b></label>
-                <input class="form-control" maxlength="50" id="mail" placeholder="ejemplo@hotmail.com" autocomplete="off">
+                <input class="form-control" type="email" maxlength="50" id="mail" placeholder="ejemplo@hotmail.com" required autocomplete="off">
+                <div class="invalid-feedback">Debe ingresar un email válido</div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="clave"><b>Clave</b></label>
                 <input class="form-control" type="password" id="clave" placeholder="Introduzca una clave de al menos 6 caracteres" required maxlength="20" minlength="6" autocomplete="new-password">
+                <div class="invalid-feedback">Debe ingresar una clave de al menos 6 caracteres</div>
             </div>
         </div>
         <div class="col-md-6">
@@ -46,13 +49,17 @@
                 <a href="/usuarios/lista" class="btn btn-round btn-danger"><i class="fa fa-backward"></i>&nbsp;Volver</a>
             </div>
         </div>
-    </div>
+    </form>
 {% endblock %}
 {% block scripts%}
 <script>
     async function Alta() {
+        event.preventDefault();
+        event.stopPropagation();
+        const form = document.getElementsByClassName('needs-validation')[0];
+        form.classList.add('was-validated');
+        if (!form.checkValidity()) return;
         $("#preloader").show();
-        
         let body = {
             usuario: $("#usuario").val(),
             mail: $("#mail").val(),
