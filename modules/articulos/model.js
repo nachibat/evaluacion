@@ -1,5 +1,21 @@
 const queryMySQL = require('../../config/database').queryMySQL;
 
+exports.getArticulo = (id) => {
+    params = [id];
+    return queryMySQL(`SELECT articulos.id,
+                        articulos.descripcion as descripcion,
+                        articulos.precio,
+                        rubros.descripcion as rubro,
+                        articulos.iva,
+                        articulos.activo,
+                        articulos.img
+                    FROM  articulos 
+                    INNER JOIN rubros 
+                    ON articulos.id_rubro = rubros.id
+                    WHERE articulos.activo = 1
+                    AND articulos.id = ?;`, params);
+}
+
 exports.getAll = () => {
     return queryMySQL(`SELECT articulos.id,
                             articulos.descripcion as descripcion,

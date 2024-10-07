@@ -11,6 +11,11 @@ exports.getByName = username => {
 		WHERE usuario = ?`, params);
 }
 
+exports.getByEmail = email => {
+	params = [email];
+	return queryMySQL(`SELECT * FROM clientes WHERE mail = ? AND activo = 1`, params);
+}
+
 exports.insert = (usuario, mail, clave, niveles) => {
 	params = [usuario, mail, clave, niveles];
 	return queryMySQL(`INSERT INTO secr (usuario, mail, clave, activa, alta, niveles) 

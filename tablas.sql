@@ -77,8 +77,11 @@ CREATE TABLE clientes (
     telefono VARCHAR(255),
     fecha_alta DATETIME,
     fecha_web DATETIME,
-    clave_web DATETIME
+    clave_web VARCHAR(255),
+    activo BOOLEAN
 );
+
+INSERT INTO clientes (nombre, apellido, mail, telefono, fecha_alta, fecha_web, clave_web, activo) VALUES ("Osvaldo", "Torrez", "test@test.com", "123456789", "2024-01-10", "2024-01-10", "$2a$10$ji3aCVpW3cy0EC5IHSmQEesSsvxG3r4XH5vLNnuOGTdGrQqjOVqmq", true);
 
 DROP TABLE IF EXISTS pedidos_titulos;
 CREATE TABLE pedidos_titulos (

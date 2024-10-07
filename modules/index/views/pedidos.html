@@ -1,0 +1,30 @@
+{% extends './inicio.html' %}
+{% block styles %} 
+    <style type="text/css">
+        .btn:disabled{
+            cursor: no-drop;
+        }
+        .ops{
+            text-align: center;
+            padding: 0.1rem .75rem !important;
+            vertical-align: middle !important;
+        }
+        .ops [disabled]{
+            opacity: 0.2;
+        }
+        .checks {
+            text-align: start;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<h3>Pedidos</h3>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let cards = $('#cards');
+    cards.remove();
+</script>
+{% endblock %}

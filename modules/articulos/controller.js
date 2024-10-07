@@ -2,6 +2,12 @@ const mArticulos = require('./model');
 const mEventos = require('../eventos/model');
 const cAccesos = require('../accesos/controller');
 
+exports.getArticulo = async (req, res) => {
+    const { idArt } = req.params;
+    const articulo = await mArticulos.getArticulo(idArt);
+    res.json({ type: 'success', articulo });
+}
+
 exports.getLista = async (req, res) => {
     const articulos = await mArticulos.getAll();
     const rubros = await mArticulos.getRubros();

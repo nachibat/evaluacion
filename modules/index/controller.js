@@ -1,5 +1,6 @@
 const mUsuarios = require('../usuarios/model')
 const mEventos = require('../eventos/model')
+const mIndex = require('./model');
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
 const constants = JSON.parse(fs.readFileSync('./config/constants.json', 'utf8'))
@@ -14,26 +15,51 @@ exports.getHome = async (req, res) => {
   res.render('index/views/home'), {}
 }
 
+exports.getCarrito = async (req, res) => {
+  res.render('index/views/carrito'), {}
+}
+
+exports.getPedidos = async (req, res) => {
+  res.render('index/views/pedidos'), {}
+}
+
+exports.getSession = async (req, res) => {
+  if (req.session.user) {
+    res.json({ sesionIniciada: true, user: req.session.user });
+  } else {
+    res.json({ sesionIniciada: false });
+  }
+}
+
+exports.getSessionCarrito = async (req, res) => {
+  const { idArt } = req.params;
+  if (req.session.user.carrito?.length) {
+    const idx = req.session.user.carrito.findIndex(item => item.idArt === idArt);
+    if (idx > -1) req.session.user.carrito[idx].cantidad += 1;
+    else req.session.user.carrito.push({ idArt, cantidad: 1 });
+  } else {
+    req.session.user.carrito = [{ idArt, cantidad: 1 }];
+  }
+  res.json({ sesionIniciada: true, user: req.session.user });
+}
+
+exports.getMediosPago = async (req, res) => {
+  const medios = await mIndex.getMediosPago();
+  res.json(medios);
+}
+
 exports.postLogin = async (req, res) => {
     const { username, password } = req.body;
     if (!username.length || !password.length) return res.json({ type: "error", title: "Error", text: 'Complete los campos' });
     
     const usuario = await mUsuarios.getByName(username);
-    if (!usuario.length) return res.json({ type: 'error', title: 'Error', text: 'El Usuario o la contraseña no coinciden' });
-    const result = await comparePassword(password, usuario[0].clave);
-    if (!result) return res.json({ type: "error", title: "Error", text: 'El Usuario o la contraseña no coinciden' });
-    if (usuario[0].activa == 0) return res.json({ type: "error", title: "Error", text: 'El Usuario no está activo' });
-
-    req.session.user = {
-        id: usuario[0].unica,
-        nombre: usuario[0].usuario,
-        mail: usuario[0].mail,
-        nivel: usuario[0].niveles,
+    if (usuario.length) {
+      login(req, res, usuario[0], password);
+    } else {
+      const web_usuario = await mUsuarios.getByEmail(username);
+      if (!web_usuario.length) return res.json({ type: 'error', title: 'Error', text: 'El Usuario o la contraseña no coinciden' });
+      login(req, res, web_usuario[0], password, true);
     }
-    req.session.auth = true;
-    req.session.save();
-    await mEventos.addEvento(usuario[0].unica, "Login", `login: ${usuario[0].usuario}`, "secr");
-    return res.json({ type: 'success', user: usuario[0] });
 }
 
 function comparePassword(candidatePassword, hash) {
@@ -43,4 +69,31 @@ function comparePassword(candidatePassword, hash) {
       resolve(isMatch)
     })
   })
+}
+
+async function login(req, res, user, password, webUser = false) {
+  const result = await comparePassword(password, webUser ? user.clave_web : user.clave);
+  if (!result) return res.json({ type: "error", title: "Error", text: 'El Usuario o la contraseña no coinciden' });
+  if (!webUser && user.activa == 0) return res.json({ type: "error", title: "Error", text: 'El Usuario no está activo' });
+  let userData = {};
+  if (webUser) {
+    userData = {
+      id: user.id,
+      nombre: user.nombre,
+      mail: user.mail,
+      webUser: true
+    };
+  } else {
+    userData = {
+      id: user.unica,
+      nombre: user.usuario,
+      mail: user.mail,
+      nivel: user.niveles,
+    };
+  }
+  req.session.user = userData;
+  req.session.auth = true;
+  req.session.save();
+  await mEventos.addEvento(webUser ? user.id : user.unica, "Login", `login: ${webUser ? user.mail : user.usuario}`, webUser ? "clientes" : "secr");
+  return res.json({ type: 'success', user: user });
 }

@@ -41,6 +41,8 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  {% block styles %}
+  {% endblock %}
 </head>
 
 <body>
@@ -82,12 +84,26 @@
 
       <nav class="nav-menu d-none d-md-flex w-100">
         <ul class="ml-md-4">
-          <li class="active"><a href="#header">Inicio</a></li>
-          <li><a href="#header">Mis pedidos</a></li>
+          <li class="active"><a href="/">Inicio</a></li>
+          {% if session.auth %}
+            <li><a href="/pedidos">Mis pedidos</a></li>
+            <li><a href="/carrito">Mi carrito</a></li>
+          {% endif %}
         </ul>
         <ul class="ml-auto">
           {% if session.auth %}
-            <li><a href="/home">Ir a panel</a></li>
+            {% if session.user.webUser %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i>&nbsp;{{user.nombre}}</a>
+                <div class="dropdown-menu leftauto dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                    <a class="dropdown-item" href="/changePass"><i class="fa fa-key"></i>&nbsp;Cambiar&nbsp;clave</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out-alt"></i>&nbsp;Cerrar&nbsp;sesión</a>
+                </div>
+              </li>
+            {% else %}
+              <li><a href="/home">Ir a panel</a></li>
+            {% endif %}
           {% else %}
             <li><a href="#" data-toggle="modal" data-target="#modalLogin"><i class="fa fa-sign-in-alt"></i>&nbsp;Ingresar</a></li>
           {% endif %}
@@ -98,12 +114,9 @@
   </header><!-- End Header -->
 
   <main id="main" style="margin: 70px 30px 200px 30px;">
-    <div class="row">
-      <div class="col-md-12">
-        <h5>Todos los articulos</h5>
-      </div>
-    </div>
     <div id="cards" class="row"></div>
+    {% block content %}
+    {% endblock %}
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
@@ -147,5 +160,7 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  {% block scripts %}
+  {% endblock %}
 </body>
 </html>

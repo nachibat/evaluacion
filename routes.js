@@ -10,9 +10,15 @@ const mw = require("./middlewares")
 router.get("/", cIndex.getInicio)
 router.post('/login', cIndex.postLogin)
 router.get('/logout', mw.logout)
+router.get('/session', cIndex.getSession)
+router.get('/session/carrito/:idArt', cIndex.getSessionCarrito)
 router.get('/home', mw.auth, cIndex.getHome)
+router.get('/carrito', mw.auth, cIndex.getCarrito)
+router.get('/pedidos', mw.auth, cIndex.getPedidos)
+router.get('/medios-pago', mw.auth, cIndex.getMediosPago)
 
 // ARTICULOS
+router.get('/articulo/:idArt', mw.auth, cArticulos.getArticulo);
 router.get('/articulos/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getLista);
 router.get('/articulos/lista/todos', cArticulos. getArticulos);
 router.get('/articulos/alta', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cArticulos.getAlta);

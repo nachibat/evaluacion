@@ -292,24 +292,38 @@
 async function cargarCards() {
   const articulos = await $.get('/articulos/lista/todos');
   let cards = $('#cards');
+  cards.append(`
+    <div class="col-md-12">
+      <h3>Todos los articulos</h3>
+    </div>  
+  `);
   articulos.forEach(articulo => {
     const precio = articulo.precio + articulo.precio * articulo.iva / 100;
     let img = '/assets/img/no_image.jpg';
     if (articulo.img) img = articulo.img;
     cards.append(`
       <div class="col-md-3">
-      <div class="card" style="width: 18rem; margin-top: 20px;">
-        <div class="card-img-top" style="width: 286px; height: 286px; background-image: url('/assets/img/no_image.jpg'); background-repeat: no-repeat; background-size: cover;">
-          <div style="width: 100%; height: 100%; background-image: url(${img}); background-repeat: no-repeat; background-size: cover;"></div>
+        <div class="card" style="width: 18rem; margin-top: 20px;">
+          <div class="card-img-top" style="width: 286px; height: 286px; background-image: url('/assets/img/no_image.jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div style="width: 100%; height: 100%; background-image: url(${img}); background-repeat: no-repeat; background-size: cover;"></div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">${articulo.descripcion}</h5>
+            <div class="card-text">Rubro: ${articulo.rubro}</div>
+            <div>Precio: ${precio}</div>
+            <a href="#" class="btn btn-primary mt-3" onclick="AgregarCarrito(${articulo.id})">Agregar al carrito</a>
+          </div>
         </div>
-        <div class="card-body">
-          <h5 class="card-title">${articulo.descripcion}</h5>
-          <div class="card-text">Rubro: ${articulo.rubro}</div>
-          <div>Precio: ${precio}</div>
-          <a href="#" class="btn btn-primary mt-3">Agregar al carrito</a>
-        </div>
-      </div>
-    </div>  
+      </div>  
     `);
   });
+}
+
+async function AgregarCarrito(item) {
+  const session = await $.get(`/session/carrito/${item}`);
+  if (session.sesionIniciada) {
+    window.location = '/carrito'
+  } else {
+    $('#modalLogin').modal('show');
+  }
 }
