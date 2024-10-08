@@ -34,6 +34,20 @@
     <div class="col-md-12">
         <h4 id="title"><i class="fa fa-list-alt"></i>&nbsp;{{ pagename }}</h4>
     </div>
+    <div class="col-12 mt-4" style="overflow-x: auto;">
+        <h5>Artículos más vendidos</h5>
+        <table class="table table-striped tableFixHead" id="tabla-mas-vendidos">
+            <thead>
+                <th style="width: 50px;"></th>
+                <th style="min-width: 130px;">Artículo</th>
+                <th>Precio</th>
+                <th>IVA</th>
+                <th>Rubro</th>
+                <th class="text-center">Cantidad vendido</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 
@@ -41,7 +55,37 @@
 <script>
     !(async function($) {
         const masVendidos = await $.get('/reportes/mas-vendidos');
-        console.log(masVendidos);
+        renderMasVendidos(masVendidos);
     })(jQuery);
+
+    function renderMasVendidos(items) {
+        if (items.length) {
+            let data = $('#tabla-mas-vendidos tbody');
+            items.forEach(item => {
+                let row = `
+                    <tr>
+                        <td>
+                            <div class="imagen">
+                                <div style="width: 100%; height: 100%; background-image: url(${item.img}); background-repeat: no-repeat; background-size: cover;"></div>
+                            </div>
+                        </td>
+                        <td>${item.articulo}</td>
+                        <td>${item.precio}</td>
+                        <td>${item.iva}</td>
+                        <td>${item.rubro}</td>
+                        <td class="text-center">${item.veces_vendido}</td>
+                    </tr>
+                `;
+                data.append(row);
+            });
+        } else {
+            $('#tabla-mas-vendidos').empty();
+            $('#tabla-mas-vendidos').append(`
+                <div class="col-12 mt-4">
+                    <h5>No hay artículos vendidos</h5>    
+                </div>
+            `);
+        }
+    }
 </script>
 {% endblock %}
