@@ -1,0 +1,47 @@
+{% extends '../../template.html' %}
+
+{% block styles %} 
+    <style type="text/css">
+        .btn:disabled{
+            cursor: no-drop;
+        }
+        .ops{
+            text-align: center;
+            padding: 0.1rem .75rem !important;
+            vertical-align: middle !important;
+        }
+        .ops [disabled]{
+            opacity: 0.2;
+        }
+        .checks {
+            text-align: start;
+        }
+        .imagen {
+            width: 40px;
+            height: 40px;
+            background-image: url('/assets/img/no_image.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        table td {
+            vertical-align: inherit !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h4 id="title"><i class="fa fa-list-alt"></i>&nbsp;{{ pagename }}</h4>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    !(async function($) {
+        const masVendidos = await $.get('/reportes/mas-vendidos');
+        console.log(masVendidos);
+    })(jQuery);
+</script>
+{% endblock %}

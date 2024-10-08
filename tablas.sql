@@ -86,6 +86,7 @@ CREATE TABLE clientes (
 );
 
 INSERT INTO clientes (nombre, apellido, mail, telefono, fecha_alta, fecha_web, clave_web, activo) VALUES ("Osvaldo", "Torrez", "test@test.com", "123456789", "2024-01-10", "2024-01-10", "$2a$10$ji3aCVpW3cy0EC5IHSmQEesSsvxG3r4XH5vLNnuOGTdGrQqjOVqmq", true);
+INSERT INTO clientes (nombre, apellido, mail, telefono, fecha_alta, fecha_web, clave_web, activo) VALUES ("Julio", "Lopez", "test2@test.com", "123456789", "2024-01-11", "2024-01-11", "$2a$10$ji3aCVpW3cy0EC5IHSmQEesSsvxG3r4XH5vLNnuOGTdGrQqjOVqmq", true);
 
 DROP TABLE IF EXISTS pedidos_titulos;
 CREATE TABLE pedidos_titulos (
@@ -149,6 +150,8 @@ CREATE TABLE `ayuda` (
 );
 
 INSERT INTO `ayuda` VALUES (1,1,'Usuarios','usuarios',1,'usuarios'),(2,2,'Permisos','accesos',1,'accesos');
+INSERT INTO ayuda (numero, titulo, texto, activa, route) VALUES (3, "Articulos", "articulos", 1, "articulos");
+INSERT INTO ayuda (numero, titulo, texto, activa, route) VALUES (4, "Reportes", "reportes", 1, "reportes");
 
 DROP TABLE IF EXISTS `eventos`;
 CREATE TABLE `eventos` (

@@ -3,6 +3,7 @@ const cIndex = require("./modules/index/controller")
 const cAccesos = require("./modules/accesos/controller")
 const cArticulos = require('./modules/articulos/controller');
 const cUsuarios = require("./modules/usuarios/controller")
+const cReportes = require('./modules/reportes/controller');
 const mw = require("./middlewares")
 
 
@@ -35,6 +36,10 @@ router.get('/articulos/modificar/:id', mw.auth, mw.updateMenuInfo, cAccesos.acce
 router.post('/articulos/modificar', mw.auth, cArticulos.postModificar);
 router.post('/articulos/lista/borrar', mw.auth, cArticulos.borrar);
 router.post('/articulos/precios-masivos', mw.auth, cArticulos.postPreciosMasivos);
+
+// Reportes
+router.get('/reportes/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cReportes.getLista);
+router.get('/reportes/mas-vendidos', mw.auth, cReportes.getMasVendidos);
 
 // PERMISOS
 router.get('/accesos/lista/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cAccesos.getAccesos)
