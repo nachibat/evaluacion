@@ -43,6 +43,12 @@ exports.getSessionCarrito = async (req, res) => {
   res.json({ sesionIniciada: true, user: req.session.user });
 }
 
+exports.setSessionCarrito = (req, res) => {
+  const { carrito } = req.body;
+  req.session.user.carrito = carrito;
+  res.json({ sesionIniciada: true, user: req.session.user });
+}
+
 exports.getMediosPago = async (req, res) => {
   const medios = await mIndex.getMediosPago();
   res.json(medios);
