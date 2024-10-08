@@ -15,16 +15,124 @@
         .checks {
             text-align: start;
         }
+        .swal-wide {
+            width:850px !important;
+        }
+        .imagen {
+            width: 40px;
+            height: 40px;
+            background-image: url('/assets/img/no_image.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        table td {
+            vertical-align: inherit !important;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-<h3>Pedidos</h3>
+<div id="tabla-principal" class="row">
+    <div class="col-md-12 d-flex">
+        <h4 id="title"><i class="fa fa-list"></i>&nbsp;Mis Pedidos</h4>
+    </div>
+    <div class="col-12 mt-4" style="overflow-x: auto;">
+        <table class="table table-striped tableFixHead" id="pedidos">
+            <thead>
+                <th>Fecha pedido</th>
+                <th>Medio de pago</th>
+                <th>Total pedido</th>
+                <th style="text-align: center; width: 190px; min-width: 190px;">Acciones</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
     let cards = $('#cards');
     cards.remove();
+    let pedidos = [];
+    !(async function($) {
+        const res = await $.get('/pedidos/realizados');
+        if (res.length) {
+            pedidos = res;
+            renderData(pedidos);
+        } else {
+            $('#tabla-principal').empty();
+            $('#tabla-principal').append(`
+                <div class="col-12 mt-4">
+                    <h5>No hay pedidos realizados</h5>    
+                </div>
+            `);
+        }
+    })(jQuery);
+
+    function renderData(pedidos) {
+        let data = $('#pedidos tbody');
+        data.empty();
+        pedidos.forEach(item => {
+            let row = `
+                <tr>
+                    <td>${item.fecha_creado}</td>
+                    <td>${item.medio_pago}</td>
+                    <td>${item.subtotal}</td>
+                    <td class="ops">
+                        <button class="btn btn-round btn-sm btn-success" data-toggle="tooltip" onclick="detalle(${item.id})"
+                            data-id="{{ item.id }}" title="Ver detalle"><i class="fa fa-search"></i></button>
+                    </td>
+                </tr>
+            `;
+            data.append(row);
+        });
+    }
+
+    async function detalle(idPedido) {
+        const res = await $.get(`/pedidos/detalle/${idPedido}`);
+        let total = 0;
+        let data = '';
+        for (const item of res) {
+            const subtotal = item.precio_unitario * item.cantidad;
+            total += subtotal;
+            const row = `
+                <tr>
+                    <td>
+                        <div class="imagen">
+                            <div style="width: 100%; height: 100%; background-image: url(${item.img}); background-repeat: no-repeat; background-size: cover;"></div>
+                        </div>
+                    </td>
+                    <td>${item.descripcion}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$ ${item.precio_unitario}</td>
+                    <td>$ ${subtotal}</td>
+                </tr>
+            `;
+            data += row;
+        }
+        Swal.fire({
+            title: 'Detalle del pedido',
+            customClass: 'swal-wide',
+            html: `
+                <table class="table table-striped tableFixHead">
+                    <thead>
+                        <th style="width: 50px;"></th>
+                        <th style="min-width: 130px;">Artículo</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </thead>
+                    <tbody>${data}</tbody>
+                </table>
+                <div class="text-right mt-2">
+                    <h6 class="d-inline">Total: $ </h6>
+                    <span>${total}</span>
+                </div>
+            `,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Aceptar',
+        })
+    }
 </script>
 {% endblock %}

@@ -11,12 +11,19 @@ router.get("/", cIndex.getInicio)
 router.post('/login', cIndex.postLogin)
 router.get('/logout', mw.logout)
 router.get('/session', cIndex.getSession)
+router.get('/home', mw.auth, cIndex.getHome)
+
+// Pedidos
+router.get('/pedidos', mw.auth, cIndex.getPedidos)
+router.get('/pedidos/realizados', mw.auth, cIndex.getPedidosList)
+router.get('/pedidos/detalle/:idPedido', mw.auth, cIndex.getPedidoDetalle)
+
+// Carrito
+router.get('/medios-pago', mw.auth, cIndex.getMediosPago)
+router.get('/carrito', mw.auth, cIndex.getCarrito)
+router.post('/carrito/guardar', mw.auth, cIndex.guardarPedido)
 router.get('/session/carrito/:idArt', cIndex.getSessionCarrito)
 router.post('/session/carrito', cIndex.setSessionCarrito)
-router.get('/home', mw.auth, cIndex.getHome)
-router.get('/carrito', mw.auth, cIndex.getCarrito)
-router.get('/pedidos', mw.auth, cIndex.getPedidos)
-router.get('/medios-pago', mw.auth, cIndex.getMediosPago)
 
 // ARTICULOS
 router.get('/articulo/:idArt', mw.auth, cArticulos.getArticulo);

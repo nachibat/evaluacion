@@ -122,7 +122,7 @@
             $('#tabla-principal').empty();
             $('#tabla-principal').append(`
                 <div class="col-12 mt-4">
-                    <h5>No hay items seleccionados</h5>    
+                    <h5>No hay items en el carrito</h5>    
                 </div>
             `);
         }
@@ -195,7 +195,17 @@
             medioPago: $('#medios-pago').val(),
             total
         };
-        console.log(data);
+        const res = await $.post('/carrito/guardar', { data });
+        if (res.type === 'success') {
+            window.location = '/pedidos'
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ocurrio un error al realizar el pedido',
+                timer: 2500
+            });
+        }
     }
 </script>
 {% endblock %}

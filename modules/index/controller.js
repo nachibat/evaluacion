@@ -104,3 +104,26 @@ async function login(req, res, user, password, webUser = false) {
   await mEventos.addEvento(webUser ? user.id : user.unica, "Login", `login: ${webUser ? user.mail : user.usuario}`, webUser ? "clientes" : "secr");
   return res.json({ type: 'success', user: user });
 }
+
+exports.guardarPedido = async (req, res) => {
+  const data = req.body.data;
+  const pedido = await mIndex.insertPedido(data.userId, data.medioPago, data.total);
+  const pedidoID = pedido.insertId;
+  for (const item of data.carrito) {
+    const precioUnitario = Number(item.precio) + Number(item.precio) * Number(item.iva) / 100;
+    await mIndex.insertDetallePedido(pedidoID, item.cantidad, item.id, precioUnitario);
+  }
+  req.session.user.carrito = [];
+  return res.json({ type: 'success', id: pedido.insertId });
+}
+
+exports.getPedidosList = async (req, res) => {
+  const pedidos = await mIndex.getPedidosList(req.session.user.id);
+  res.json(pedidos);
+}
+
+exports.getPedidoDetalle = async (req, res) => {
+  const { idPedido } = req.params;
+  const articulos = await mIndex.getPedidoDetalle(idPedido);
+  res.json(articulos);
+}
