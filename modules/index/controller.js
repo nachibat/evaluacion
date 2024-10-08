@@ -33,7 +33,8 @@ exports.getSession = async (req, res) => {
 
 exports.getSessionCarrito = async (req, res) => {
   const { idArt } = req.params;
-  if (req.session.user.carrito?.length) {
+  if (!req.session?.user) return res.json({ sesionIniciada: false });
+  if (req.session?.user?.carrito?.length) {
     const idx = req.session.user.carrito.findIndex(item => item.idArt === idArt);
     if (idx > -1) req.session.user.carrito[idx].cantidad += 1;
     else req.session.user.carrito.push({ idArt, cantidad: 1 });

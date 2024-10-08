@@ -22,6 +22,10 @@ CREATE TABLE medios_pago(
     descripcion VARCHAR(255)
 );
 
+INSERT INTO evaluacion.medios_pago (descripcion) VALUES ("Tarjeta de Crédito");
+INSERT INTO evaluacion.medios_pago (descripcion) VALUES ("Tarjeta de Débito");
+INSERT INTO evaluacion.medios_pago (descripcion) VALUES ("Transferencia bancaria");
+
 DROP TABLE IF EXISTS rubros;
 CREATE TABLE rubros (
 	id INT AUTO_INCREMENT PRIMARY KEY,
