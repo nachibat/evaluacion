@@ -58,7 +58,7 @@
         <span id="total"></span>
     </div>
     <div class="col-12 text-right mt-2">
-        <button id="compra" class="btn btn-round btn-primary">Realizar pedido</button>
+        <button id="compra" onclick="checkout()" class="btn btn-round btn-primary">Realizar pedido</button>
     </div>
 </div>
 {% endblock %}
@@ -66,11 +66,14 @@
 {% block scripts %}
 <script>
     let carrito = [];
+    let userId;
+    let total = 0;
     !(async function($) {
         "use strict";
         let cards = $('#cards');
         cards.remove();
         const session = await $.get('/session');
+        userId = session.user.id;
         if (session.user.carrito?.length) {
             for (let item of session.user.carrito) {
                 const res = await $.get(`/articulo/${item.idArt ? item.idArt : item.id}`);
@@ -88,7 +91,6 @@
         if (carrito.length) {
             let data = $('#carrito tbody');
             data.empty();
-            let total = 0;
             carrito.forEach(item => {
                 const precioUnitario = item.precio + item.precio * item.iva / 100;
                 const subtotal = precioUnitario * item.cantidad;
@@ -185,6 +187,15 @@
                 await $.post('/session/carrito', { carrito });
             }
         });
+    }
+    async function checkout() {
+        const data = {
+            userId,
+            carrito,
+            medioPago: $('#medios-pago').val(),
+            total
+        };
+        console.log(data);
     }
 </script>
 {% endblock %}

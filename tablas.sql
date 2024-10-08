@@ -91,9 +91,11 @@ DROP TABLE IF EXISTS pedidos_titulos;
 CREATE TABLE pedidos_titulos (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
+    id_medio_pago INT NOT NULL,
     subtotal FLOAT NOT NULL,
     fecha_creado DATETIME,
-    CONSTRAINT fk_cliente FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+    CONSTRAINT fk_cliente FOREIGN KEY (id_cliente) REFERENCES clientes(id),
+    CONSTRAINT fk_medio_pago FOREIGN KEY (id_medio_pago) REFERENCES medios_pago(id)
 );
 
 DROP TABLE IF EXISTS pedidos_detalles;
