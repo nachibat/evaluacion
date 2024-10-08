@@ -84,8 +84,8 @@
 
       <nav class="nav-menu d-none d-md-flex w-100">
         <ul class="ml-md-4">
-          <li class="active"><a href="/">Inicio</a></li>
-          {% if session.auth %}
+          <li><a href="/">Inicio</a></li>
+          {% if session.user.webUser %}
             <li><a href="/pedidos">Mis pedidos</a></li>
             <li><a href="/carrito">Mi carrito</a></li>
           {% endif %}
