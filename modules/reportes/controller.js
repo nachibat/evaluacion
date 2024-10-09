@@ -17,6 +17,9 @@ exports.getMasVendidos = async (req, res) => {
 
 exports.getListaMediosPago = async (req, res) => {
     const { idMedioPago } = req.params;
-    const pedidos = await mReportes.getListaMediosPago(idMedioPago);
+    let { from, to } = req.query;
+    from += ' 00:00:00';
+    to += ' 23:59:59';
+    const pedidos = await mReportes.getListaMediosPago(idMedioPago, from, to);
     res.json(pedidos);
 }

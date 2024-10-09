@@ -56,7 +56,13 @@
     <div class="col-12 mt-4" style="overflow-x: auto;">
         <div class="d-flex align-items-center justify-content-between mb-2">
             <h5>Ingresos por ventas según medios de pago</h5>
-            <select style="width: 225px;" id="medios-pago" class="form-control mt-1" onchange="changeEvent()"></select>
+            <div class="filter d-flex align-items-center">
+                <label for="date-from" class="mb-0 mr-2">Desde</label>
+                <input id="date-from" class="form-control mr-4" type="date" onkeydown="return false" onchange="changeDate()">
+                <label for="date-to" class="mb-0 mr-2">Hasta</label>
+                <input id="date-to" class="form-control mr-4" type="date" onchange="changeDate()">
+                <select style="width: 225px;" id="medios-pago" class="form-control" onchange="changeEvent()"></select>
+            </div>
         </div>
         <table class="table table-striped tableFixHead" id="tabla-medios-pago">
             <thead>
@@ -79,8 +85,9 @@
 <script>
     !(async function($) {
         await getMediosPago();
+        renderInputDate();
         await renderTablaMasVendidos();
-        await renderTablaMediosPago(1);
+        
     })(jQuery);
 
     async function getMediosPago() {
@@ -92,9 +99,30 @@
         });
     }
 
+    async function renderInputDate() {
+        let now = new Date();
+        let firstDayYear = `${now.getFullYear()}-01-01`;
+        let today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+        $('#date-from').val(firstDayYear);
+        $('#date-to').val(today);
+        await renderTablaMediosPago(1, $('#date-from').val(), $('#date-to').val());
+    }
+
     async function changeEvent() {
         const idMedioPago = $('#medios-pago').val();
-        await renderTablaMediosPago(idMedioPago);
+        await renderTablaMediosPago(idMedioPago, $('#date-from').val(), $('#date-to').val());
+    }
+
+    async function changeDate() {
+        const dateFrom = $('#date-from').val();
+        const dateTo = $('#date-to');
+        if (dateFrom) {
+            dateTo.attr('min', dateFrom);
+            if (dateTo.val() && dateTo.val() < dateFrom) {
+                dateTo.val('');
+            }
+        }
+        await changeEvent();
     }
 
     async function renderTablaMasVendidos() {
@@ -133,9 +161,10 @@
         console.log('Generar PDF');
     }
 
-    async function renderTablaMediosPago(idMedioPago) {
+    async function renderTablaMediosPago(idMedioPago, from, to) {
         $('#tabla-medios-pago tbody').empty();
-        const pedidos = await $.get(`/reportes/medio-pago/${idMedioPago}`);
+        $('#btnMediosPago').prop('disabled', false);
+        const pedidos = await $.get(`/reportes/medio-pago/${idMedioPago}?from=${from}&to=${to}`);
         if (pedidos.length) {
             let data = $('#tabla-medios-pago tbody');
             pedidos.forEach(item => {
@@ -151,11 +180,11 @@
                 data.append(row);
             });
         } else {
-            $('#tabla-medios-pago').empty();
-            $('#tabla-medios-pago').append(`
-                <div class="col-12 mt-4">
-                    <h5>No hay pedidos con el medio de pago seleccionado</h5>    
-                </div>
+            $('#tabla-medios-pago tbody').empty();
+            $('#tabla-medios-pago tbody').append(`
+                <tr>
+                    <td colspan="5" class="text-center">No hay pedidos encontrados con el filtro aplicado</td>    
+                </tr>
             `);
             $('#btnMediosPago').prop('disabled', true);
         }

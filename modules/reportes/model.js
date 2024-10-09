@@ -16,9 +16,9 @@ exports.getMasVendidos = () => {
                     LIMIT 10;`, []);
 }
 
-exports.getListaMediosPago = (idMedioPago) => {
-    const params = [idMedioPago];
-    return queryMySQL(`SELECT pedidos_titulos.id,
+exports.getListaMediosPago = (idMedioPago, from, to) => {
+    const params = [idMedioPago, from, to];
+    let query = `SELECT pedidos_titulos.id,
                             pedidos_titulos.fecha_creado,
                             clientes.nombre,
                             clientes.apellido,
@@ -29,5 +29,7 @@ exports.getListaMediosPago = (idMedioPago) => {
                     ON clientes.id = pedidos_titulos.id_cliente
                     INNER JOIN medios_pago
                     ON medios_pago.id = pedidos_titulos.id_medio_pago
-                    WHERE pedidos_titulos.id_medio_pago = ?;`, params);
+                    WHERE pedidos_titulos.id_medio_pago = ?
+                    AND pedidos_titulos.fecha_creado BETWEEN ? AND ?`;
+    return queryMySQL(query, params);
 }
