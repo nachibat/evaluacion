@@ -127,3 +127,27 @@ exports.getPedidoDetalle = async (req, res) => {
   const articulos = await mIndex.getPedidoDetalle(idPedido);
   res.json(articulos);
 }
+
+exports.guardarCliente = async (req, res) => {
+  const { nombre, apellido, email, tel, pass } = req.body;
+  if (!nombre.length || !apellido.length || !email.length || !tel.length || !pass.length) return res.json({ type: "error", title: "Error", text: "Complete todos los campos!" });
+  const userExist = await mIndex.getUsuarioByMail(email);
+  if (userExist.length) return res.json({ type: "error", title: "Error", text: "El email está en uso" });
+  const clientExist = await mIndex.getClienteByMail(email);
+  if (clientExist.length) return res.json({ type: "error", title: "Error", text: "El email está en uso" });
+  if (!email.length || !validateEmail(email)) return res.json({ type: "error", title: "Error", text: "Ingrese un mail valido" });
+  if (pass.length < 6) return res.json({ type: "error", title: "Error", text: "La clave debe contener al menos 6 caracteres!" });
+  bcrypt.genSalt(10, (err, salt) => { //GENERO EL SALT PARA LA PASS
+    bcrypt.hash(pass, salt, async (err, hash) => { //HASHEO LA PASS
+        let insert = await mIndex.insertCliente(nombre, apellido, email, tel, hash);
+        if (!insert.affectedRows) return res.json({ type: "error", title: "Error", text: "Hubo un error al procesar la solicitud" });
+        await mEventos.addEvento(insert.insertId, "Alta", `Alta id: ${insert.insertId}, mail: ${email}`, "clientes");
+        res.json({ type: "success", title: "Exito", text: "Se registró el usuario correctamente. Se envió mail para validar" });
+    });
+  });
+}
+
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}

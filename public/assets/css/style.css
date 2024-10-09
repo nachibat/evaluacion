@@ -2864,3 +2864,7 @@ body *::-webkit-scrollbar {
 ::-webkit-scrollbar-track:active {
   background: #d4d4d4;
 }
+
+.input-wrong {
+  border-color: red;
+}

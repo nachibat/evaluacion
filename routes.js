@@ -47,6 +47,9 @@ router.post('/reportes/generar-pdf', mw.auth, cReportes.generarPDF);
 router.get('/accesos/lista/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cAccesos.getAccesos)
 router.post("/updateacceso/:id_usuario/:id_menu/:acceso_short/:value", mw.auth, cAccesos.updateAcceso)
 
+// CLIENTES
+router.post('/clientes/registro', cIndex.guardarCliente);
+
 // USUARIOS
 router.get('/usuarios/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cUsuarios.getLista)
 router.get('/usuarios/alta', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cUsuarios.getAlta)

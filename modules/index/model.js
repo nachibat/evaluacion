@@ -43,3 +43,19 @@ exports.getPedidoDetalle = (idPedido) => {
             WHERE id_pedido_titulo = ?
         `, params);
 }
+
+exports.insertCliente = (nombre, apellido, mail, telefono, clave) => {
+    const params = [nombre, apellido, mail, telefono, clave];
+    return queryMySQL(`INSERT INTO clientes (nombre, apellido, mail, telefono, fecha_alta, fecha_web, clave_web, activo)
+                VALUES (?, ?, ?, ?, NOW(), NOW(), ?, false);`, params);
+}
+
+exports.getClienteByMail = (mail) => {
+    const params = [mail];
+    return queryMySQL(`SELECT * FROM clientes WHERE mail = ?;`, params);
+}
+
+exports.getUsuarioByMail = (mail) => {
+    const params = [mail];
+    return queryMySQL(`SELECT * FROM secr WHERE mail = ?;`, params);
+}

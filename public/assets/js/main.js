@@ -327,3 +327,75 @@ async function AgregarCarrito(item) {
     $('#modalLogin').modal('show');
   }
 }
+
+function crearCuenta() {
+  $('#modalRegistro').modal('show');
+}
+
+function changeInputEvent(id) {
+  $(id).removeClass('input-wrong');
+  $('#error-hint').text('');
+}
+
+async function registrarUsuario() {
+  const nombre = $('#registro_nombre');
+  const apellido = $('#registro_apellido');
+  const email = $('#registro_email');
+  const tel = $('#registro_tel');
+  const registro_password = $('#registro_password');
+  const registro_password2 = $('#registro_password2');
+  if (nombre.val().trim() === '') {
+    $('#error-hint').text('No puede haber campos vacios');
+    nombre.addClass('input-wrong');
+  }
+  if (apellido.val().trim() === '') {
+    $('#error-hint').text('No puede haber campos vacios');
+    apellido.addClass('input-wrong');
+  }
+  if (email.val().trim() === '') {
+    $('#error-hint').text('No puede haber campos vacios');
+    email.addClass('input-wrong');
+  }
+  if (tel.val().trim() === '') {
+    $('#error-hint').text('No puede haber campos vacios');
+    tel.addClass('input-wrong');
+  }
+  if (registro_password.val().trim() === '') {
+    $('#error-hint').text('No puede haber campos vacios');
+    registro_password.addClass('input-wrong');
+  }
+  if (registro_password2.val().trim() === '') {
+    $('#error-hint').text('No puede haber campos vacios');
+    registro_password2.addClass('input-wrong');
+  }
+  if ($('#error-hint').text() != '') return;
+  if (registro_password.val().trim() != registro_password2.val().trim()) {
+    $('#error-hint').text('Las contraseñas no son iguales');
+    registro_password.addClass('input-wrong');
+    registro_password2.addClass('input-wrong');
+  }
+  if ($('#error-hint').text() != '') return;
+  if (registro_password.val().trim().length < 6) {
+    $('#error-hint').text('La contraseña debe tener al menos 6 caracteres');
+    registro_password.addClass('input-wrong');
+    registro_password2.addClass('input-wrong');
+  }
+  if ($('#error-hint').text() != '') return;
+  const body = {
+    nombre: nombre.val(),
+    apellido: apellido.val(),
+    email: email.val(),
+    tel: tel.val(),
+    pass: registro_password.val()
+  };
+  $("#preloader").show();
+  const res = await $.post('/clientes/registro', body);
+  $("#preloader").hide();
+  Swal.fire({
+    icon: res.type,
+    title: res.title,
+    text: res.text
+  }).then(() => {
+      if (res.type == "success") $('#modalRegistro').modal('hide');
+  });
+}

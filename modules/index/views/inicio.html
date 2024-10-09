@@ -46,6 +46,7 @@
 </head>
 
 <body>
+  <!-- Modal de Login -->
   <div class="modal fade" id="modalLogin" tabindex="-1" aria-labelledby="modalLoginLabel" aria-hidden="true"
     data-backdrop="static">
     <div class="modal-dialog">
@@ -64,10 +65,49 @@
             <h6>Contraseña:</h6>
             <input class="form-control" type="password" id="login_password">
           </div>
+          <div class="text-right mt-3">
+            <a href="#" data-dismiss="modal" onclick="crearCuenta()">Crear cuenta</a>
+          </div>
         </div>
         <div class="modal-footer">
           <button id="btn_ingresar" class="btn btn-primary " onclick="ingresar()">Ingresar</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de nuevo usuario -->
+  <div class="modal fade" id="modalRegistro" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true"
+    data-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background: #ffffffd1;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalRegistroLabel" style="text-transform: none;">Registrar usuario</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <h6>Nombre:</h6>
+            <input class="form-control mb-2" type="text" id="registro_nombre" onchange="changeInputEvent('#registro_nombre')">
+            <h6>Apellido:</h6>
+            <input class="form-control mb-2" type="text" id="registro_apellido" onchange="changeInputEvent('#registro_apellido')">
+            <h6>Email:</h6>
+            <input class="form-control mb-2" type="email" id="registro_email" onchange="changeInputEvent('#registro_email')">
+            <h6>Telefono:</h6>
+            <input class="form-control mb-2" type="number" id="registro_tel" onchange="changeInputEvent('#registro_tel')">
+            <h6>Contraseña:</h6>
+            <input class="form-control mb-2" type="password" id="registro_password" onchange="changeInputEvent('#registro_password')">
+            <h6>Repetir Contraseña:</h6>
+            <input class="form-control mb-2" type="password" id="registro_password2" onchange="changeInputEvent('#registro_password2')">
+            <small class="text-danger" id="error-hint"></small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn_ingresar" class="btn btn-primary " onclick="registrarUsuario()">Registrar</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
