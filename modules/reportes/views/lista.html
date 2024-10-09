@@ -163,14 +163,19 @@
     }
 
     async function ReporteMasVendidos() {
+        $("#preloader").show();
         fetch('/reportes/pdf/articulos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ masVendidos })
         }).then(response => response.blob()).then(blob => {
+            $("#preloader").hide();
             const url = window.URL.createObjectURL(blob);
             window.open(url, '_blank');
-        }).catch(error => console.error('Error al descargar PDF: ', error));
+        }).catch(error => {
+            $("#preloader").hide();
+            console.error('Error al descargar PDF: ', error)
+        });
     }
 
     async function renderTablaMediosPago(idMedioPago, from, to) {
