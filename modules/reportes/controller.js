@@ -45,7 +45,7 @@ exports.generarPDFarticulos = async (req, res) => {
     };
     pdf.create(document, options).then((pdfBuffer) => {
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename="articulos.pdf"');        
+        res.setHeader('Content-Disposition', 'inline; filename="articulos.pdf"');        
         res.send(pdfBuffer);
     }).catch((error) => {
         console.error(error);
