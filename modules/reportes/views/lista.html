@@ -35,7 +35,7 @@
         <h4 id="title"><i class="fa fa-list-alt"></i>&nbsp;{{ pagename }}</h4>
     </div>
     <div class="col-12 mt-4" style="overflow-x: auto;">
-        <h5>Artículos más vendidos</h5>
+        <h5>Ranking de 10 artículos más vendidos</h5>
         <table class="table table-striped tableFixHead" id="tabla-mas-vendidos">
             <thead>
                 <th style="width: 50px;"></th>
@@ -48,20 +48,60 @@
             <tbody></tbody>
         </table>
     </div>
+    <div class="col-12 mt-2 text-right">
+        <button id="btnMasVendidos" class="btn btn-round btn-primary ml-1" onclick="ReporteMasVendidos()"><i class="fa fa-file" aria-hidden="true"></i> Generar PDF</button>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 mt-4" style="overflow-x: auto;">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <h5>Ingresos por ventas según medios de pago</h5>
+            <select style="width: 225px;" id="medios-pago" class="form-control mt-1" onchange="changeEvent()"></select>
+        </div>
+        <table class="table table-striped tableFixHead" id="tabla-medios-pago">
+            <thead>
+                <th style="max-width: 50px;">Id pedido</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Medio de pago</th>
+                <th>Subtotal</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="col-12 mt-4 text-right">
+        <button id="btnMediosPago" class="btn btn-round btn-primary ml-1" onclick="ReporteMediosPago()"><i class="fa fa-file" aria-hidden="true"></i> Generar PDF</button>
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
     !(async function($) {
-        const masVendidos = await $.get('/reportes/mas-vendidos');
-        renderMasVendidos(masVendidos);
+        await getMediosPago();
+        await renderTablaMasVendidos();
+        await renderTablaMediosPago(1);
     })(jQuery);
 
-    function renderMasVendidos(items) {
-        if (items.length) {
+    async function getMediosPago() {
+        const mediosPago = await $.get('/medios-pago');
+        mediosPago.forEach(item => {
+            $('#medios-pago').append(`
+                <option value="${item.id}">${item.descripcion}</option>
+            `);
+        });
+    }
+
+    async function changeEvent() {
+        const idMedioPago = $('#medios-pago').val();
+        await renderTablaMediosPago(idMedioPago);
+    }
+
+    async function renderTablaMasVendidos() {
+        const masVendidos = await $.get('/reportes/mas-vendidos');
+        if (masVendidos.length) {
             let data = $('#tabla-mas-vendidos tbody');
-            items.forEach(item => {
+            masVendidos.forEach(item => {
                 let row = `
                     <tr>
                         <td>
@@ -85,7 +125,44 @@
                     <h5>No hay artículos vendidos</h5>    
                 </div>
             `);
+            $('#btnMasVendidos').prop('disabled', true);
         }
+    }
+
+    function ReporteMasVendidos() {
+        console.log('Generar PDF');
+    }
+
+    async function renderTablaMediosPago(idMedioPago) {
+        $('#tabla-medios-pago tbody').empty();
+        const pedidos = await $.get(`/reportes/medio-pago/${idMedioPago}`);
+        if (pedidos.length) {
+            let data = $('#tabla-medios-pago tbody');
+            pedidos.forEach(item => {
+                let row = `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.fecha_creado}</td>
+                        <td>${item.nombre} ${item.apellido}</td>
+                        <td>${item.medio_pago}</td>
+                        <td>${item.subtotal}</td>
+                    </tr>
+                `;
+                data.append(row);
+            });
+        } else {
+            $('#tabla-medios-pago').empty();
+            $('#tabla-medios-pago').append(`
+                <div class="col-12 mt-4">
+                    <h5>No hay pedidos con el medio de pago seleccionado</h5>    
+                </div>
+            `);
+            $('#btnMediosPago').prop('disabled', true);
+        }
+    }
+
+    function ReporteMediosPago() {
+        console.log('Generar PDF Medios de pago');
     }
 </script>
 {% endblock %}

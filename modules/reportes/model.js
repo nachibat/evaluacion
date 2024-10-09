@@ -15,3 +15,19 @@ exports.getMasVendidos = () => {
                     ORDER BY veces_vendido DESC
                     LIMIT 10;`, []);
 }
+
+exports.getListaMediosPago = (idMedioPago) => {
+    const params = [idMedioPago];
+    return queryMySQL(`SELECT pedidos_titulos.id,
+                            pedidos_titulos.fecha_creado,
+                            clientes.nombre,
+                            clientes.apellido,
+                            medios_pago.descripcion as medio_pago,
+                            pedidos_titulos.subtotal
+                    FROM pedidos_titulos
+                    INNER JOIN clientes
+                    ON clientes.id = pedidos_titulos.id_cliente
+                    INNER JOIN medios_pago
+                    ON medios_pago.id = pedidos_titulos.id_medio_pago
+                    WHERE pedidos_titulos.id_medio_pago = ?;`, params);
+}

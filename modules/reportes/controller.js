@@ -14,3 +14,9 @@ exports.getMasVendidos = async (req, res) => {
     const articulos = await mReportes.getMasVendidos();
     res.json(articulos);
 }
+
+exports.getListaMediosPago = async (req, res) => {
+    const { idMedioPago } = req.params;
+    const pedidos = await mReportes.getListaMediosPago(idMedioPago);
+    res.json(pedidos);
+}
