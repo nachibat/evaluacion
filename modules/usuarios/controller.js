@@ -95,22 +95,23 @@ exports.getPass = (req, res) => {
 }
 
 exports.postPass = async (req, res) => {
-    const { actual, nueva, nuevaConfirm } = req.body;
+    const { actual, nueva, nuevaConfirm, cliente } = req.body;
     const { id } = req.session.user;
 
     // Validaciones
     if (!actual.length || !nueva.length || !nuevaConfirm.length) return res.json({ type: "error", title: "Error", text: "Complete todos los campos" });
     if (nueva !== nuevaConfirm) return res.json({ type: "error", title: "Error", text: "Las claves deben coincidir" });
     if (nueva.length < 6) return res.json({ type: "error", title: "Error", text: "La clave debe tener al menos 6 caracteres" });
-    const user = await mUsuarios.getById(id);
-    let ismatch = await comparePassword(actual, user[0].clave);
+    const user = await mUsuarios.getById(id, cliente);
+    const clave = cliente ? user[0].clave_web : user[0].clave;
+    let ismatch = await comparePassword(actual, clave);
     if (!ismatch) return res.json({ type: "error", title: "Error", text: "Clave actual incorrecta. Intente nuevamente" });
 
     bcrypt.genSalt(10, (err, salt) => { //GENERO EL SALT PARA LA PASS
         bcrypt.hash(nueva, salt, async (err, hash) => { //HASHEO LA PASS
-            const update = await mUsuarios.updatePass(user[0].unica, hash);
+            const update = await mUsuarios.updatePass(id, hash, cliente);
             if (!update.affectedRows) return res.json({ type: "error", title: "Error", text: "Hubo un error al procesar la solicitud" });
-            await mEventos.addEvento(id, "Cambio Pass", `Cambio Pass unica: ${user[0].unica}, usuario: ${user[0].usuario}`, "secr");
+            await mEventos.addEvento(id, "Cambio Pass", `Cambio Pass unica: ${id}, usuario: ${user[0].usuario}`, cliente ? 'clientes': 'secr');
             res.json({ type: "success", title: "Exito", text: "Contraseña modificada correctamente" });
         });
     });

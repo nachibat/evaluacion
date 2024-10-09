@@ -399,3 +399,49 @@ async function registrarUsuario() {
       if (res.type == "success") $('#modalRegistro').modal('hide');
   });
 }
+
+function changePass() {
+  Swal.fire({
+    title: 'Cambiar clave',
+    html: `
+      <br>
+      <div class="form-group">
+          <input class="form-control" maxlength="50" type="password" id="claveActual" placeholder="Clave actual" autocomplete="off">
+      </div>
+      <div class="form-group">
+          <input class="form-control" maxlength="50" type="password" id="claveNueva" placeholder="Nueva contraseña" autocomplete="off">
+      </div>
+      <div class="form-group">
+          <input class="form-control" maxlength="50" type="password" id="claveNueva2" placeholder="Confirme nueva contraseña" autocomplete="off">
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    preConfirm: () => {
+      if ($('#claveNueva').val() != $('#claveNueva2').val()) {
+          Swal.showValidationMessage(`Las contraseñas nuevas deben ser iguales`);
+      }
+      return;
+    }
+  }).then(async result => {
+    if (result.value) {
+      $("#preloader").show();
+      const body = {
+        actual: $('#claveActual').val(),
+        nueva: $('#claveNueva').val(),
+        nuevaConfirm: $("#claveNueva2").val(),
+        cliente: true
+      };
+      const res = await $.post("/changePass", body);
+      $("#preloader").hide();
+      Swal.fire({
+        icon: res.type,
+        title: res.title,
+        text: res.text
+      });
+    }
+  });
+}

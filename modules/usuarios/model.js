@@ -32,9 +32,11 @@ exports.borrar = unica => {
 	return queryMySQL("DELETE FROM secr WHERE unica = ?", params);
 }
 
-exports.getById = unica => {
+exports.getById = (unica, cliente) => {
+	const tabla = cliente ? 'clientes' : 'secr';
+	const field = cliente ? 'id' : 'unica';
 	params = [unica];
-	return queryMySQL("select * from secr where unica = ?", params);
+	return queryMySQL(`select * from ${tabla} where ${field} = ?`, params);
 }
 
 exports.update = (id, usuario, mail, niveles, activo) => {
@@ -44,7 +46,10 @@ exports.update = (id, usuario, mail, niveles, activo) => {
 		WHERE unica= ?`, params);
 }
 
-exports.updatePass = (unica, pass) => {
+exports.updatePass = (unica, pass, cliente) => {
+	const tabla = cliente ? 'clientes' : 'secr';
+	const field = cliente ? 'id' : 'unica';
+	const fieldPass = cliente ? 'clave_web' : 'clave';
 	params = [pass, unica];
-	return queryMySQL("UPDATE secr SET clave= ? WHERE unica= ?", params);
+	return queryMySQL(`UPDATE ${tabla} SET ${fieldPass} = ? WHERE ${field}= ?`, params);
 }
