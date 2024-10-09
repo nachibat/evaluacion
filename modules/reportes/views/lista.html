@@ -75,6 +75,10 @@
             <tbody></tbody>
         </table>
     </div>
+    <div class="col-12 text-right mt-2">
+        <h6 class="d-inline">Total de ingresos: $ </h6>
+        <span id="total-medios-pago"></span>
+    </div>
     <div class="col-12 mt-4 text-right">
         <button id="btnMediosPago" class="btn btn-round btn-primary ml-1" onclick="ReporteMediosPago()"><i class="fa fa-file" aria-hidden="true"></i> Generar PDF</button>
     </div>
@@ -162,12 +166,14 @@
     }
 
     async function renderTablaMediosPago(idMedioPago, from, to) {
+        let total = 0;
         $('#tabla-medios-pago tbody').empty();
         $('#btnMediosPago').prop('disabled', false);
         const pedidos = await $.get(`/reportes/medio-pago/${idMedioPago}?from=${from}&to=${to}`);
         if (pedidos.length) {
             let data = $('#tabla-medios-pago tbody');
             pedidos.forEach(item => {
+                total += item.subtotal;
                 let row = `
                     <tr>
                         <td>${item.id}</td>
@@ -179,6 +185,8 @@
                 `;
                 data.append(row);
             });
+            $('#total-medios-pago').empty();
+            $('#total-medios-pago').append(total);
         } else {
             $('#tabla-medios-pago tbody').empty();
             $('#tabla-medios-pago tbody').append(`
@@ -187,6 +195,8 @@
                 </tr>
             `);
             $('#btnMediosPago').prop('disabled', true);
+            $('#total-medios-pago').empty();
+            $('#total-medios-pago').append(0)
         }
     }
 
