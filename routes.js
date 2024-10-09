@@ -41,6 +41,7 @@ router.post('/articulos/precios-masivos', mw.auth, cArticulos.postPreciosMasivos
 router.get('/reportes/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cReportes.getLista);
 router.get('/reportes/mas-vendidos', mw.auth, cReportes.getMasVendidos);
 router.get('/reportes/medio-pago/:idMedioPago', mw.auth, cReportes.getListaMediosPago);
+router.post('/reportes/pdf/articulos', mw.auth, cReportes.generarPDFarticulos);
 
 // PERMISOS
 router.get('/accesos/lista/:id', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cAccesos.getAccesos)

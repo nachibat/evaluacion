@@ -88,8 +88,9 @@
 {% block scripts %}
 <script>
     !(async function($) {
+        let masVendidos = [];
         await getMediosPago();
-        renderInputDate();
+        await renderInputDate();
         await renderTablaMasVendidos();
         
     })(jQuery);
@@ -130,7 +131,7 @@
     }
 
     async function renderTablaMasVendidos() {
-        const masVendidos = await $.get('/reportes/mas-vendidos');
+        masVendidos = await $.get('/reportes/mas-vendidos');
         if (masVendidos.length) {
             let data = $('#tabla-mas-vendidos tbody');
             masVendidos.forEach(item => {
@@ -161,8 +162,20 @@
         }
     }
 
-    function ReporteMasVendidos() {
-        console.log('Generar PDF');
+    async function ReporteMasVendidos() {
+        fetch('/reportes/pdf/articulos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masVendidos })
+        }).then(response => response.blob()).then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'articulos.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }).catch(error => console.error('Error al descargar PDF: ', error));
     }
 
     async function renderTablaMediosPago(idMedioPago, from, to) {

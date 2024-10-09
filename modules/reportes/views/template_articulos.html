@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Artículos más vendidos</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Artículo</th>
+        <th>Precio</th>
+        <th>IVA</th>
+        <th>Rubro</th>
+        <th>Cantidad vendido</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each articulos}}
+      <tr>
+        <td>{{this.articulo}}</td>
+        <td>{{this.precio}}</td>
+        <td>{{this.iva}}</td>
+        <td>{{this.rubro}}</td>
+        <td>{{this.veces_vendido}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</body>
+</html>
