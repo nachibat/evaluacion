@@ -27,25 +27,24 @@ exports.getListaMediosPago = async (req, res) => {
     res.json(pedidos);
 }
 
-exports.generarPDFarticulos = async (req, res) => {
-    const { masVendidos } = req.body;
-    console.log(masVendidos);
-    var html = fs.readFileSync(__dirname + "/views/template_articulos.html", "utf8");
+exports.generarPDF = async (req, res) => {
+    const { items, template, total } = req.body;
+    const title = template === 'articulos' ? 'Lista 10 de Artículos más vendidos' : 'Ingresos por ventas según medios de pago';
+    var html = fs.readFileSync(__dirname + `/views/template_${template}.html`, 'utf8');
     var options = {
-        format: "A3",
-        orientation: "portrait",
-        border: "10mm"
+        format: 'A4',
+        orientation: 'portrait',
+        border: '10mm'
     };
+    const data = { title, items, total };
     var document = {
         html: html,
-        data: {
-            articulos: masVendidos,
-        },
+        data,
         type: 'buffer'
     };
     pdf.create(document, options).then((pdfBuffer) => {
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'inline; filename="articulos.pdf"');        
+        res.setHeader('Content-Disposition', 'inline; filename="reporte.pdf"');        
         res.send(pdfBuffer);
     }).catch((error) => {
         console.error(error);
