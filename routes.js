@@ -49,6 +49,7 @@ router.post("/updateacceso/:id_usuario/:id_menu/:acceso_short/:value", mw.auth, 
 
 // CLIENTES
 router.post('/clientes/registro', cIndex.guardarCliente);
+router.get('/activar-cuenta/:userId', cIndex.verificarCuenta);
 
 // USUARIOS
 router.get('/usuarios/lista', mw.auth, mw.updateMenuInfo, cAccesos.acceso, cUsuarios.getLista)

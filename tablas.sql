@@ -82,6 +82,7 @@ CREATE TABLE clientes (
     fecha_alta DATETIME,
     fecha_web DATETIME,
     clave_web VARCHAR(255),
+    token VARCHAR(255),
     activo BOOLEAN
 );
 

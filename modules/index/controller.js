@@ -4,6 +4,8 @@ const mIndex = require('./model');
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
 const constants = JSON.parse(fs.readFileSync('./config/constants.json', 'utf8'))
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 exports.getInicio = async (req, res) => {
   res.render('index/views/inicio', {
@@ -129,6 +131,7 @@ exports.getPedidoDetalle = async (req, res) => {
 }
 
 exports.guardarCliente = async (req, res) => {
+  const token = crypto.randomBytes(20).toString('hex');
   const { nombre, apellido, email, tel, pass } = req.body;
   if (!nombre.length || !apellido.length || !email.length || !tel.length || !pass.length) return res.json({ type: "error", title: "Error", text: "Complete todos los campos!" });
   const userExist = await mIndex.getUsuarioByMail(email);
@@ -139,15 +142,57 @@ exports.guardarCliente = async (req, res) => {
   if (pass.length < 6) return res.json({ type: "error", title: "Error", text: "La clave debe contener al menos 6 caracteres!" });
   bcrypt.genSalt(10, (err, salt) => { //GENERO EL SALT PARA LA PASS
     bcrypt.hash(pass, salt, async (err, hash) => { //HASHEO LA PASS
-        let insert = await mIndex.insertCliente(nombre, apellido, email, tel, hash);
+        let insert = await mIndex.insertCliente(nombre, apellido, email, tel, hash, token);
         if (!insert.affectedRows) return res.json({ type: "error", title: "Error", text: "Hubo un error al procesar la solicitud" });
         await mEventos.addEvento(insert.insertId, "Alta", `Alta id: ${insert.insertId}, mail: ${email}`, "clientes");
+        envioCorreo(nombre, email, insert.insertId, token);
         res.json({ type: "success", title: "Exito", text: "Se registró el usuario correctamente. Se envió mail para validar" });
     });
   });
+  
 }
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
+}
+
+function envioCorreo(nombre, email, userId, token) {
+  const activationUrl = `http://localhost:5001/activar-cuenta/${userId}?token=${token}`;
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: {
+        user: 'arielle.champlin83@ethereal.email',
+        pass: '2927uRr3XARWN5TQZj'
+    }
+  });
+  let mailOptions = {
+    from: 'arielle.champlin83@ethereal.email',   // Remitente
+    to: email,                    // Destinatario
+    subject: 'Verificación de Cuenta',  // Asunto
+    text: `Hola ${nombre}, tu registro fue exitoso. Por favor, activa tu cuenta haciendo clic en el siguiente enlace: ${activationUrl}`, // Contenido del correo
+    html: `<p>Hola ${nombre},</p>
+          <p>Tu registro fue exitoso. Para activar tu cuenta, por favor haz clic en el siguiente enlace:</p>
+          <a href="${activationUrl}">Activar cuenta</a>`
+  };
+  // Enviar el correo
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Correo enviado: ' + info.response);
+    }
+  });
+}
+
+exports.verificarCuenta = async (req, res) => {
+  const { userId } = req.params;
+  const { token } = req.query;
+  const user = await mIndex.getClienteById(userId);
+  if (!user.length) return res.status(404).send('Usuario no encontrado');
+  if (user[0].token != token) return res.status(400).send('Token inválido');
+  const habilitar = await mIndex.habilitarCliente(userId);
+  if (habilitar) return res.redirect('/');
+  else return res.status(500).send('Error al habilitar la cuenta');
 }
